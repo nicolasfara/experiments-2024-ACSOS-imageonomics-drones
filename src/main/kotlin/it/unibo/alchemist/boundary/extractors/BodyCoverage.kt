@@ -29,19 +29,21 @@ class BodyCoverage(
         time: Time,
         step: Long,
     ): Map<String, Double> {
-        val nodes = environment.nodes
-        val cameraNodes = nodes.filter { it.isCamera() }
-        val targetNodes = nodes.filter { it.isTarget() }
-        val visibleTargets = cameraNodes.flatMap { it.getVisibleTargets() }.toSet()
+        // cast environment to Physics2DEnvironment, and then use getHeading to get the directions of the nodes
+        // val nodes = environment.nodes
+        // val cameraNodes = nodes.filter { it.isCamera() }
+        // val targetNodes = nodes.filter { it.isTarget() }
+        // val visibleTargets = cameraNodes.flatMap { it.getVisibleTargets() }.toSet()
         TODO("Not yet implemented")
     }
 
     private fun <T> VisibleNode<*, *>.computeMetric(environment: Environment<T, *>, cameraNodes: List<Node<*>>): Double {
-        camerasReachingBody(cameraNodes).map { camera ->
-            @Suppress("UNCHECKED_CAST")
-            val cameraPoint = environment.getPosition(camera as Node<T>).coordinates
+        camerasReachingBody(cameraNodes).map { // camera ->
+            // Suppress("UNCHECKED_CAST")
+            // val cameraPoint = environment.getPosition(camera as Node<T>).coordinates
         }
-        TODO()
+        return environment.getDimensions().toDouble()
+        //TODO()
     }
 
     private fun VisibleNode<*, *>.camerasReachingBody(cameraNodes: List<Node<*>>): List<Node<*>> {
