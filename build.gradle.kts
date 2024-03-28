@@ -44,9 +44,9 @@ dependencies {
     implementation(libs.bundles.smile)
     implementation(fileTree("libs"))
     testImplementation(kotlin("test"))
-    if (!GraphicsEnvironment.isHeadless()) {
+//    if (!GraphicsEnvironment.isHeadless()) {
         implementation("it.unibo.alchemist:alchemist-swingui:${libs.versions.alchemist.get()}")
-    }
+//    }
 }
 
 // Heap size estimation for batches
