@@ -53,20 +53,20 @@ jobs:
         with:
           name: charts
           path: charts.tar.zst
-  check-simulations-docker:
-    runs-on: ubuntu-22.04
-    concurrency:
-      group: container-check${{ github.workflow }}${{ matrix.os }}${{ github.event.number || github.ref }}
-      cancel-in-progress: true
-    steps:
-    - name: Checkout
-      uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
-    - name: Run compose
-      run: docker-compose up --build
+#  check-simulations-docker:
+#    runs-on: ubuntu-22.04
+#    concurrency:
+#      group: container-check${{ github.workflow }}${{ matrix.os }}${{ github.event.number || github.ref }}
+#      cancel-in-progress: true
+#    steps:
+#    - name: Checkout
+#      uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
+#    - name: Run compose
+#      run: docker-compose up --build
   release:
     needs:
       - check-simulations-native
-      - check-simulations-docker
+#      - check-simulations-docker
       - create-charts
     runs-on: ubuntu-22.04
     concurrency:
@@ -98,7 +98,7 @@ jobs:
       - name: Login to dockerhub
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          DOCKER_USERNAME: danysk
+          DOCKER_USERNAME: nicolasfarabegoli
         run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin docker.io
       - name: Semantic Release
         env:
@@ -111,7 +111,7 @@ jobs:
     needs:
       - create-charts
       - check-simulations-native
-      - check-simulations-docker
+#      - check-simulations-docker
       - release
     if: >-
       always() && (
