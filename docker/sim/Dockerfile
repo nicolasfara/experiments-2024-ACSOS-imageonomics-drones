@@ -7,6 +7,7 @@ COPY src src
 COPY docker docker
 COPY *.kts ./
 COPY *.properties ./
+COPY libs libs
 RUN sed -i '/alias(libs.plugins.gitSemVer)/d' build.gradle.kts
 COPY gradlew* ./
 RUN CI=true ./gradlew runAllGraphic
