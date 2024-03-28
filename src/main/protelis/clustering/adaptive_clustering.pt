@@ -1,0 +1,62 @@
+/*
+ *  Allows dynamically changing the hierarchical clustering distance in a network of devices.
+ */
+
+module clustering:adaptive_clustering
+import it.unibo.experiment.clustering.HerdExperimentUtils.isClusterCentroidVisible
+import clustering:utils_c
+
+
+public def getNewClusteringDistance(myCluster, localVisibleNodes, allAssignedNodes){
+    let allClusteringDistances = foldUnion([getClusteringDistance()], nbr(getClusteringDistance()))
+    let myClusterNodes = tupleOf(myCluster.getNodes())
+    if(myCluster != emptyCluster() && isClusterCentroidVisible(myCluster)){
+        // the device arrived at its destination
+        let myClusterVisibleNodesSize = localVisibleNodes.intersection(myClusterNodes).size()
+        let isClusterCovered = myClusterVisibleNodesSize == myClusterNodes.size()
+        if(isClusterCovered){ // device cover all nodes of its cluster
+            getDistanceWhenTargetCovered(localVisibleNodes, allAssignedNodes, myClusterNodes, allClusteringDistances)
+        }else{
+            getDistanceWhenTargetNotCovered(localVisibleNodes, myClusterNodes, myClusterVisibleNodesSize, allClusteringDistances)
+        }
+    }else{
+        adapt(allClusteringDistances)
+    }
+}  
+
+
+def getDistanceWhenTargetCovered(localVisibleNodes, allAssignedNodes, myClusterNodes, allClusteringDistances){
+    let unionSize = localVisibleNodes.union(myClusterNodes).size() 
+    if(unionSize > myClusterNodes.size()){ // device cover nodes from other clusters
+        let extraneous = localVisibleNodes.subtract(myClusterNodes)
+        let extraneousCoverage = extraneous.size() / localVisibleNodes.size()
+        if(!allAssignedNodes.containsAll(extraneous) || extraneousCoverage > 0.5){
+            max(increment(), allClusteringDistances.max(0))
+        }else{
+            adapt(allClusteringDistances)
+        }
+    }else{
+        adapt(allClusteringDistances)
+    }
+}
+
+def getDistanceWhenTargetNotCovered(localVisibleNodes, myClusterNodes, myClusterVisibleNodesSize, allClusteringDistances) {
+    let myClusterCoverage = myClusterVisibleNodesSize / myClusterNodes.size()
+    if(myClusterVisibleNodesSize == localVisibleNodes.size() && myClusterCoverage < 0.7 ){
+        min(decrement(), allClusteringDistances.min(0))
+    }else{
+        adapt(allClusteringDistances)
+    }
+}
+
+def adapt(list) = list.reduce(0, (a, b) -> {a + b}) / list.size()
+
+def increment() {
+   let clusteringDistance = getClusteringDistance()
+   clusteringDistance + (clusteringDistance * 0.02)
+}
+
+def decrement(){
+    let clusteringDistance = getClusteringDistance()
+    clusteringDistance - (clusteringDistance * 0.02)
+}

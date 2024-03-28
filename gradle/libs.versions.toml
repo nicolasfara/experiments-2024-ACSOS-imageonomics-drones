@@ -1,14 +1,30 @@
 [versions]
 alchemist = "33.0.2"
 kotlin = "1.9.23"
+smile = "3.0.2"
 
 [libraries]
 alchemist = { module = "it.unibo.alchemist:alchemist", version.ref = "alchemist" }
+alchemist-euclidean-geometry = {module = "it.unibo.alchemist:alchemist-euclidean-geometry", version.ref = "alchemist" }
+alchemist-maps = {module = "it.unibo.alchemist:alchemist-maps", version.ref = "alchemist" }
+alchemist-physics = {module = "it.unibo.alchemist:alchemist-physics", version.ref = "alchemist" }
 alchemist-protelis = { module = "it.unibo.alchemist:alchemist-incarnation-protelis", version.ref = "alchemist" }
-alchemist-scafi = { module = "it.unibo.alchemist:alchemist-incarnation-scafi", version.ref = "alchemist" }
+alchemist-smartcam = {module = "it.unibo.alchemist:alchemist-smartcam", version.ref = "alchemist" }
+alchemist-ui-tooling = {module = "it.unibo.alchemist:alchemist-ui-tooling", version.ref = "alchemist" }
+smile-core = {module = "com.github.haifengl:smile-core", version.ref = "smile"}
+smile-kotlin = {module = "com.github.haifengl:smile-kotlin", version.ref = "smile"}
 
 [bundles]
-alchemist-protelis = [ "alchemist", "alchemist-protelis" ]
+alchemist-protelis = [
+    "alchemist",
+    "alchemist-protelis",
+    "alchemist-euclidean-geometry",
+    "alchemist-maps",
+    "alchemist-physics",
+    "alchemist-smartcam",
+    "alchemist-ui-tooling"
+]
+smile = ["smile-core", "smile-kotlin"]
 
 [plugins]
 gitSemVer = { id = "org.danilopianini.git-sensitive-semantic-versioning", version = "3.1.4" }

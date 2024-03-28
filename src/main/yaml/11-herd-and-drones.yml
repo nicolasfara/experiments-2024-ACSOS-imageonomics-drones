@@ -1,0 +1,209 @@
+incarnation: protelis
+environment:
+  type: MovementTrackerPhysics2DEnvironment
+  parameters: ["drone"]
+variables:
+  ###### HERD
+  bodyLength: &bodyLen
+    formula: 2
+  bodyWidth: &bodyWidth
+    formula: bodyLength / 2
+  stressZoneRadius:
+    formula: 1.5 * bodyLength
+  neutralZoneRadius:
+    formula: 10 * bodyLength
+  attractionZoneRadius:
+    formula: 20 * bodyLength
+  rearZoneRadius:
+    formula: attractionZoneRadius
+  stressZoneRepulsionFactor: &stressRepulsionFactor
+    formula: 0.5 # [0; 1] Slow down by this factor if there are neighbors ahead of the individual in the stress zone.
+  attractionSpeedUp: &attractionSpeedUpFactor
+    formula: 1.5 # [1; inf] if there are nodes in attraction zone multiply the speed-up factor to current velocity
+  leadersSlowDown:
+    formula: 0.7 # [0; 1] if there are neighbors in rear zone slow down by this value
+  leadersSlowDownProbability:
+    formula: 0.8
+  trailersSpeedUp:
+    formula: 2.0
+  trailersSpeedUpProbability:
+    formula: 0.4
+  intrinsicForwardVelocity: 
+    formula: 1.0 * bodyLength
+  intrinsicLateralVelocity: 
+    formula: 0.5 * bodyLength
+  ### Variable grouping
+  zonesRadii: &zonesRadii
+    formula: listOf(stressZoneRadius, neutralZoneRadius, attractionZoneRadius, rearZoneRadius)
+    language: kotlin
+  velocities: &velocities
+    formula: listOf(intrinsicLateralVelocity, intrinsicForwardVelocity)
+    language: kotlin
+  movementProbabilities: &movementProbabilities
+    formula: listOf(0.25, 0.5, 0.25) # Probability to go [left, forward, right]
+    language: kotlin
+  leaderSeedChange: &leaderSeedChange
+    formula: listOf(leadersSlowDown, leadersSlowDownProbability)
+    language: kotlin
+  trailerSeedChange: &trailerSeedChange
+    formula: listOf(trailersSpeedUp, trailersSpeedUpProbability)
+    language: kotlin
+###### Drones
+  CameraSpeed: &CameraSpeed
+    formula: 10 # m/s
+  EnvironmentSize: &EnvironmentSize
+    formula: 2000 # meters
+  FoVAngle: &FoVAngle
+    formula: 80 # degrees
+  FoVDistance: &FoVDistance
+    formula: 100 # meters
+  FoVBlindSpotDistance: &FoVBlindSpotDistance
+    formula: 18 # meters
+  RotationSpeed: &RotationSpeed
+    formula: 60 # degrees / s
+  CommunicationRange: &CommunicationRange
+    formula: EnvironmentSize
+  Algorithm: &Algorithm
+    type: ListOf
+    parameters:
+      - "ff_linpro_c"
+      - "bc_re_c"
+      - "ff_linpro_ac"
+  ClusteringDistance: &ClusteringDistance
+    type: ListOf
+    parameters: [60]
+#    formula: 60
+  MaxCamerasPerTarget: &MaxCamerasPerTarget
+    formula: 2
+##### Other
+  CamHerdRatio:
+    type: ArbitraryVariable
+    parameters: [1.5, 0.5, 1.0, 1.5, 2.0]
+  NumberOfHerds: &HerdNumber
+    type: ArbitraryVariable
+    parameters: [8, 2, 4, 6, 8]
+  NumCameras: &NumCameras
+    formula: Math.ceil((CamHerdRatio)*NumberOfHerds)
+    language: kotlin
+  NumberOfAnimals: &NumberOfAnimals
+    formula:  140
+  EnvironmentRadius: &EnvironmentRadius
+    formula: EnvironmentSize / 2
+  Seed: &Seed
+    type: ListOf
+    parameters: [ 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+
+seeds:
+  scenario: *Seed
+  simulation: *Seed
+
+_drone: &drone
+  - time-distribution: 2
+    type: ChemicalReaction
+    actions:
+      - type: InitHeading
+        parameters: [ ]
+      - type: CameraSeeWithBlindSpot
+        parameters: [ *FoVBlindSpotDistance, *FoVDistance, *FoVAngle, vision ]
+      - type: HeadTowardTarget
+        parameters: [ heading, *RotationSpeed ]
+      - type: MoveToTarget
+        parameters: [ destination, *CameraSpeed ]
+  - time-distribution: 2
+    type: ChemicalReaction
+    conditions:
+      - type: MoleculeHasConcentration
+        parameters: [ doZigZag, true ]
+    actions:
+      - type: ConstantDistanceRandomWalk
+        parameters: [ 500, *CameraSpeed ]
+  - time-distribution: 2
+    type: ChemicalReaction
+    conditions:
+      - type: MoleculeHasConcentration
+        parameters: [ doSpin, true ]
+    actions:
+      - type: Spin
+        parameters: [ *RotationSpeed ]
+  - time-distribution: 1
+    program: *Algorithm
+  - program: send
+
+
+_herdParameters: &herdParameters
+  - *zonesRadii
+  - *velocities
+  - *movementProbabilities
+  - *stressRepulsionFactor
+  - *attractionSpeedUpFactor
+  - *leaderSeedChange
+  - *trailerSeedChange
+  - *HerdNumber
+  - *EnvironmentRadius
+  - *Seed
+
+_herd: &herd
+  - time-distribution: 1
+    type: Event
+    actions:
+      type: HerdBehavior
+      parameters: *herdParameters
+
+_animal_area: &animalArea
+  - type: RectangularArea
+    parameters: [ *bodyLen, *bodyWidth ] #inverted
+
+network-model:
+  type: ConnectToGroup
+  parameters: [*CommunicationRange, drone]
+
+export:
+  - type: CustomCSVExporter
+    parameters:
+      fileNameRoot: "experiment_export"
+      interval: 5.0
+      exportPath: "build/export"
+    data:
+      - time
+      - type: CamerasKCoverage
+        parameters: ["vision", "zebra", *MaxCamerasPerTarget]
+      - type: DistanceTraveled
+
+
+deployments:
+  - type: GroupsDeployment
+    parameters: [*NumberOfAnimals, 0, 0, *EnvironmentRadius, *HerdNumber, 25]
+    contents:
+      - molecule: zebra
+        concentration: true
+    programs: *herd
+    properties: *animalArea
+  - type: Circle
+    parameters: [ *NumCameras, 0, 0, 200]
+    contents:
+      - molecule: drone
+        concentration: true
+      - molecule: FoVDistance
+        concentration: *FoVDistance
+      - molecule: EnvironmentSize
+        concentration: *EnvironmentSize
+      - molecule: CommRange
+        concentration: *CommunicationRange
+      - molecule: Target
+        concentration: "\"zebra\""
+      - molecule: MaxCamerasPerTarget
+        concentration: *MaxCamerasPerTarget
+      - molecule: MaxMovementSpeed
+        concentration: *CameraSpeed
+      - molecule: MaxRotationSpeed
+        concentration: *RotationSpeed
+      - molecule: noAttractiveForces
+        concentration: true
+      - molecule: ClusteringDistance
+        concentration: *ClusteringDistance
+    programs: *drone
+#  - type: SpecificPositions
+#    parameters: [ [ 0,0 ],[ 1000, 0 ], [ -1000, 0 ], [ 0,1000 ], [ 0, -1000 ] ]
+#    contents:
+#      - molecule: landmark
+#        concentration: true

@@ -41,6 +41,9 @@ multiJvm {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(libs.bundles.alchemist.protelis)
+    implementation(libs.bundles.smile)
+    implementation(fileTree("libs"))
+    testImplementation(kotlin("test"))
     if (!GraphicsEnvironment.isHeadless()) {
         implementation("it.unibo.alchemist:alchemist-swingui:${libs.versions.alchemist.get()}")
     }
@@ -129,3 +132,7 @@ File(rootProject.rootDir.path + "/src/main/yaml").listFiles()
         }
         runAllBatch.dependsOn(batch)
     }
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
