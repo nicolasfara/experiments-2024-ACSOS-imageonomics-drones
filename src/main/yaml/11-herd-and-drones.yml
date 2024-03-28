@@ -207,3 +207,7 @@ deployments:
 #    contents:
 #      - molecule: landmark
 #        concentration: true
+
+terminate:
+  - type: AfterTime
+    parameters: [ 1800 ]
