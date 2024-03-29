@@ -21,7 +21,6 @@ class BodyCoverage(
     private val bodyCoverageColumnName = "BodyCoverage"
     override val columnNames: List<String> = listOf(bodyCoverageColumnName)
 
-
     override fun <T> extractData(
         environment: Environment<T, *>,
         reaction: Actionable<T>?,
@@ -89,7 +88,7 @@ class BodyCoverage(
             //       The more the camera is perpendicular to the body, the more the quality of the coverage is high.
             //       The more the camera is far from the body, the less the quality of the coverage is high.
             // TODO(evaluate the idea above)
-            .sum()
+            .sum() / perimeter()
     }
 
     private fun midPoint(p1: Euclidean2DPosition, p2: Euclidean2DPosition): Euclidean2DPosition {
@@ -130,11 +129,7 @@ class BodyCoverage(
     /**
      * Bounding box perimeter of the body.
      */
-    private fun VisibleNode<*, *>.perimeter(): Double {
-        val x = this.position.coordinates[0]
-        val y = this.position.coordinates[1]
-        return x + y
-    }
+    private fun perimeter(): Double = 2 * (bodyLength + bodyWidth)
 
     private fun Node<*>.isTarget() = contains(targetMolecule) && getConcentration(targetMolecule).toBoolean()
 
