@@ -6,22 +6,21 @@ import it.unibo.alchemist.model.Molecule
 import it.unibo.alchemist.model.Node
 import it.unibo.alchemist.model.Time
 import it.unibo.alchemist.model.VisibleNode
-import it.unibo.alchemist.model.actions.CameraSeeWithBlindSpot
 import it.unibo.alchemist.model.molecules.SimpleMolecule
+import it.unibo.alchemist.model.physics.environments.Physics2DEnvironment
+import it.unibo.alchemist.model.positions.Euclidean2DPosition
 import it.unibo.experiment.toBoolean
-import kotlin.math.PI
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 class BodyCoverage(
     private val visionMolecule: Molecule,
     private val targetMolecule: Molecule,
+    private val bodyLength: Double,
+    private val bodyWidth: Double,
 ) : AbstractDoubleExporter() {
 
-    override val columnNames: List<String> = listOf("BodyCoverage")
+    private val bodyCoverageColumnName = "BodyCoverage"
+    override val columnNames: List<String> = listOf(bodyCoverageColumnName)
 
-    private val bodyLength = SimpleMolecule("bodyLength")
-    private val bodyWidth = SimpleMolecule("bodyWidth")
 
     override fun <T> extractData(
         environment: Environment<T, *>,
@@ -29,46 +28,122 @@ class BodyCoverage(
         time: Time,
         step: Long,
     ): Map<String, Double> {
-        // cast environment to Physics2DEnvironment, and then use getHeading to get the directions of the nodes
-        // val nodes = environment.nodes
-        // val cameraNodes = nodes.filter { it.isCamera() }
-        // val targetNodes = nodes.filter { it.isTarget() }
-        // val visibleTargets = cameraNodes.flatMap { it.getVisibleTargets() }.toSet()
-        TODO("Not yet implemented")
-    }
-
-    private fun <T> VisibleNode<*, *>.computeMetric(environment: Environment<T, *>, cameraNodes: List<Node<*>>): Double {
-        camerasReachingBody(cameraNodes).map { // camera ->
-            // Suppress("UNCHECKED_CAST")
-            // val cameraPoint = environment.getPosition(camera as Node<T>).coordinates
+        require(environment is Physics2DEnvironment) {
+            "Expected a Physics2DEnvironment but got ${environment::class}"
         }
-        return environment.getDimensions().toDouble()
-        //TODO()
+        val nodes = environment.nodes
+        val cameraNodes: List<Node<T>> = nodes.filter { it.isCamera() }
+        val targetNodes = nodes.filter { it.isTarget() }
+        val visibleTargets = cameraNodes.flatMap { it.getVisibleTargets() }.toSet()
+        val sum = visibleTargets.sumOf { it.computeMetricForNode(environment, cameraNodes, bodyLength, bodyWidth) }
+        return mapOf(bodyCoverageColumnName to sum / targetNodes.size)
     }
 
-    private fun VisibleNode<*, *>.camerasReachingBody(cameraNodes: List<Node<*>>): List<Node<*>> {
-        return cameraNodes.filter { it.getVisibleTargets().contains(this) }
+    private fun <T> VisibleNode<T, *>.computeMetricForNode(
+        environment: Environment<T, *>,
+        cameraNodes: List<Node<T>>,
+        bodyLength: Double,
+        bodyWidth: Double,
+    ): Double {
+        require(environment is Physics2DEnvironment) {
+            "Expected a Physics2DEnvironment but got ${environment::class}"
+        }
+        return camerasReachingTheBody(cameraNodes).sumOf { camera ->
+            val bodyRotoTranslated = getRotoTranslationToOrigin(environment)
+            val (dx, dy, angle) = camera.rotoTranslateCamera(environment, bodyRotoTranslated)
+            val rotoTranslatedCameraPosition = environment.makePosition(dx, dy)
+            when (angle) {
+                0.0, 180.0 -> bodyWidth
+                90.0, 270.0 -> bodyLength
+                else -> getVisiblePerimeter(environment, rotoTranslatedCameraPosition, bodyLength, bodyWidth)
+            }
+        }
+    }
+
+    private fun <T> getVisiblePerimeter(
+        env: Physics2DEnvironment<T>,
+        cameraPosition: Euclidean2DPosition,
+        bodyLength: Double,
+        bodyWidth: Double,
+    ): Double {
+        val topRightCoordinate = env.makePosition(bodyLength / 2, bodyWidth / 2)
+        val bottomRightCoordinate = env.makePosition(bodyLength / 2, -bodyWidth / 2)
+        val bottomLeftCoordinate = env.makePosition(-bodyLength / 2, -bodyWidth / 2)
+        val topLeftCoordinate = env.makePosition(-bodyLength / 2, bodyWidth / 2)
+        val segments = listOf(
+            topRightCoordinate to bottomRightCoordinate,
+            bottomRightCoordinate to bottomLeftCoordinate,
+            bottomLeftCoordinate to topLeftCoordinate,
+            topLeftCoordinate to topRightCoordinate,
+        )
+        return segments.asSequence()
+            // Determine the vertex distance to the camera
+            .map { it to it.first.distanceTo(cameraPosition) + it.second.distanceTo(cameraPosition) }
+            // Sort by distance (closest first)
+            .sortedBy { it.second }
+            // Take the first two segments (only two are visible when the camera is not perpendicular to the body)
+            .take(2)
+            // Compute the visible perimeter
+            .map { (points, _) -> points.first.distanceTo(points.second) }
+            // Idea: weight the perimeter by the angle of the camera and distance.
+            //       The more the camera is perpendicular to the body, the more the quality of the coverage is high.
+            //       The more the camera is far from the body, the less the quality of the coverage is high.
+            // TODO(evaluate the idea above)
+            .sum()
+    }
+
+    private fun midPoint(p1: Euclidean2DPosition, p2: Euclidean2DPosition): Euclidean2DPosition {
+        return Euclidean2DPosition((p1.coordinates[0] + p2.coordinates[0]) / 2, (p1.coordinates[1] + p2.coordinates[1]) / 2)
     }
 
     /**
-     * Ramanujan's approximation of the perimeter of an ellipse.
+     * Returns the list of cameras that can see the body.
+     * TODO: verify if the body must be fully covered or partially covered.
+     */
+    private fun <T> VisibleNode<T, *>.camerasReachingTheBody(cameraNodes: List<Node<T>>): List<Node<T>> {
+        return cameraNodes.filter { it.getVisibleTargets().contains(this) }
+    }
+
+    private data class RotoTranslation(val x: Double, val y: Double, val angle: Double)
+
+    private fun <T> VisibleNode<T, *>.getRotoTranslationToOrigin(environment: Environment<T, *>): RotoTranslation {
+        require(environment is Physics2DEnvironment<T>) {
+            "Expected a Physics2DEnvironment but got ${environment::class}"
+        }
+        val bodyPosition = environment.getPosition(node).coordinates
+        val bodyAngle = environment.getHeading(node).asAngle
+        return RotoTranslation(bodyPosition[0], bodyPosition[1], bodyAngle)
+    }
+
+    private fun <T> Node<T>.rotoTranslateCamera(env: Environment<T, *>, bodyRotoTranslation: RotoTranslation): RotoTranslation {
+        require(env is Physics2DEnvironment<T>) {
+            "Expected a Physics2DEnvironment but got ${env::class}"
+        }
+        val (dx, dy, angle) = bodyRotoTranslation
+        val cameraPosition = env.getPosition(this)
+        val cameraAngle = env.getHeading(this).asAngle
+        val normalizedPosition = cameraPosition.minus(dx to dy)
+        val normalizedAngle = cameraAngle - angle
+        return RotoTranslation(normalizedPosition[0], normalizedPosition[1], normalizedAngle)
+    }
+
+    /**
+     * Bounding box perimeter of the body.
      */
     private fun VisibleNode<*, *>.perimeter(): Double {
-        val x = this.position.coordinates[0] / 2
-        val y = this.position.coordinates[1] / 2
-
-        val t = ((x - y) / (x + y)).pow(2)
-        return PI * (x + y) * (1 + (3 * t) / (10 + sqrt(4 - 3 * t)))
+        val x = this.position.coordinates[0]
+        val y = this.position.coordinates[1]
+        return x + y
     }
 
     private fun Node<*>.isTarget() = contains(targetMolecule) && getConcentration(targetMolecule).toBoolean()
 
     private fun Node<*>.isCamera() = contains(visionMolecule)
 
-    private fun Node<*>.getVisibleTargets() =
+    private fun <T> Node<T>.getVisibleTargets() =
         with(getConcentration(visionMolecule)) {
-            require(this is List<*>) { "Expected a List but got $this of type ${this?.javaClass}" }
-            if (!isEmpty()) {
+            require(this is List<*>) { "Expected a List but got $this" }
+            if (isNotEmpty()) {
                 get(0)?.also {
                     require(it is VisibleNode<*, *>) {
                         "Expected a List<VisibleNode> but got List<${it::class}> = $this"
@@ -76,6 +151,6 @@ class BodyCoverage(
                 }
             }
             @Suppress("UNCHECKED_CAST")
-            (this as Iterable<VisibleNode<*, *>>).filter { it.node.isTarget() }
+            (this as Iterable<VisibleNode<T, *>>).filter { it.node.isTarget() }
         }
 }

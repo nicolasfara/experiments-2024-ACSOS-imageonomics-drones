@@ -168,6 +168,8 @@ export:
       - type: CamerasKCoverage
         parameters: ["vision", "zebra", *MaxCamerasPerTarget]
       - type: DistanceTraveled
+      - type: BodyCoverage
+        parameters: ["vision", "zebra", *bodyLen, *bodyWidth]
 
 
 deployments:
