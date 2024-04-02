@@ -41,6 +41,8 @@ multiJvm {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(libs.bundles.alchemist.protelis)
+//    implementation(libs.bundles.apache.geometry)
+    implementation(libs.jst)
     implementation(libs.bundles.smile)
     implementation(fileTree("libs"))
     testImplementation(kotlin("test"))

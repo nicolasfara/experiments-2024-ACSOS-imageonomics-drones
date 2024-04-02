@@ -11,6 +11,9 @@ alchemist-physics = {module = "it.unibo.alchemist:alchemist-physics", version.re
 alchemist-protelis = { module = "it.unibo.alchemist:alchemist-incarnation-protelis", version.ref = "alchemist" }
 alchemist-smartcam = {module = "it.unibo.alchemist:alchemist-smartcam", version.ref = "alchemist" }
 alchemist-ui-tooling = {module = "it.unibo.alchemist:alchemist-ui-tooling", version.ref = "alchemist" }
+apache-geometry-core = { module = "org.apache.commons:commons-geometry-core", version = "1.0" }
+apache-geometry-euclidean = { module = "org.apache.commons:commons-geometry-euclidean", version = "1.0" }
+jst = { module = "org.locationtech.jts:jts-core", version = "1.19.0" }
 smile-core = {module = "com.github.haifengl:smile-core", version.ref = "smile"}
 smile-kotlin = {module = "com.github.haifengl:smile-kotlin", version.ref = "smile"}
 
@@ -25,6 +28,7 @@ alchemist-protelis = [
     "alchemist-ui-tooling"
 ]
 smile = ["smile-core", "smile-kotlin"]
+apache-geometry = ["apache-geometry-core", "apache-geometry-euclidean"]
 
 [plugins]
 gitSemVer = { id = "org.danilopianini.git-sensitive-semantic-versioning", version = "3.1.4" }

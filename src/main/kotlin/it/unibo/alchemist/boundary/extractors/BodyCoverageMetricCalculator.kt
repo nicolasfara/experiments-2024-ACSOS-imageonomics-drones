@@ -1,24 +1,51 @@
 package it.unibo.alchemist.boundary.extractors
 
 import it.unibo.alchemist.model.positions.Euclidean2DPosition
+import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.Geometry
+import org.locationtech.jts.geom.GeometryFactory
+import org.locationtech.jts.geom.util.AffineTransformation
 
 class BodyCoverageMetricCalculator(private val bodyLength: Double, private val bodyWidth: Double) {
     private val bodyPerimeter by lazy { 2 * (bodyLength + bodyWidth) }
 
     fun computeMetricForNode(
-        bodyPositionAndAngle: Pair<Euclidean2DPosition, Double>,
-        camerasPositionsAndAngles: List<Pair<Euclidean2DPosition, Double>>
+        bodyPositionAndAngle: Pair<Euclidean2DPosition, Euclidean2DPosition>,
+        camerasPositionsAndAngles: List<Pair<Euclidean2DPosition, Euclidean2DPosition>>
     ): Double {
-        val normalizedCameraPositions = camerasPositionsAndAngles.toPositionsAndAngles().map {
-            it.rotoTranslateRespectTo(bodyPositionAndAngle.toPositionAndAngle())
-        }
-        return normalizedCameraPositions.sumOf {
-            when (it.angle) {
-                0.0, 180.0 -> bodyWidth
-                90.0, 270.0 -> bodyLength
-                else -> getWeightedVisiblePerimeter(it)
-            }
-        } / bodyPerimeter
+//        val bodyCoordinate = Coordinate(bodyPositionAndAngle.first.x, bodyPositionAndAngle.first.y)
+//        val body = createRectangle(bodyWidth, bodyLength, bodyCoordinate, bodyPositionAndAngle.second)
+//        val cameras = camerasPositionsAndAngles.map {
+//
+//        }
+
+//        val normalizedCameraPositions = camerasPositionsAndAngles.toPositionsAndAngles().map {
+//            it.rotoTranslateRespectTo(bodyPositionAndAngle.toPositionAndAngle())
+//        }
+//        return normalizedCameraPositions.sumOf {
+//            when (it.angle) {
+//                0.0, 180.0 -> bodyWidth
+//                90.0, 270.0 -> bodyLength
+//                else -> getWeightedVisiblePerimeter(it)
+//            }
+//        } / bodyPerimeter
+        TODO()
+    }
+
+    private fun createBody(position: Euclidean2DPosition, angle: Euclidean2DPosition): Geometry {
+        val factory = GeometryFactory()
+        val coordinates = arrayOf(
+            Coordinate(-bodyWidth / 2, bodyLength / 2),
+            Coordinate(bodyWidth / 2, bodyLength / 2),
+            Coordinate(bodyWidth / 2, -bodyLength / 2),
+            Coordinate(-bodyWidth / 2, -bodyLength / 2),
+            Coordinate(-bodyWidth / 2, bodyLength / 2)
+        )
+        val rectangle = factory.createPolygon(coordinates)
+        val rotation = AffineTransformation().rotate(angle.asAngle, 0.0, 0.0)
+        val translation = AffineTransformation().translate(position.x, position.y)
+        val rotated = rotation.transform(rectangle)
+        return translation.transform(rotated)
     }
 
     private fun getWeightedVisiblePerimeter(cameraPosition: PositionAndAngle): Double {
@@ -36,10 +63,7 @@ class BodyCoverageMetricCalculator(private val bodyLength: Double, private val b
             .map { it to it.first.distanceTo(cameraPosition.position) + it.second.distanceTo(cameraPosition.position) }
             .sortedBy { it.second }
             .take(2)
-            .map { (points, _) -> points to points.first.distanceTo(points.second) }
-            .map { (points, segment) ->
-                TODO()
-            }
+            .map { (points, _) -> points.first.distanceTo(points.second) }
             .sum() / bodyPerimeter
     }
 
