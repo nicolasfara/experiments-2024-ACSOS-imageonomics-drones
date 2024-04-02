@@ -83,16 +83,32 @@ class BodyCoverage(
             // Take the first two segments (only two are visible when the camera is not perpendicular to the body)
             .take(2)
             // Compute the visible perimeter
-            .map { (points, _) -> points.first.distanceTo(points.second) }
+            .map { (points, _) -> points to points.first.distanceTo(points.second) }
             // Idea: weight the perimeter by the angle of the camera and distance.
             //       The more the camera is perpendicular to the body, the more the quality of the coverage is high.
             //       The more the camera is far from the body, the less the quality of the coverage is high.
-            // TODO(evaluate the idea above)
+            .map { (points, perimeter) ->
+                val angle = when (points.isVertical()) {
+                    // Rotate by 90 degrees the camera
+                    true -> (cameraPosition.minus(points.midPoint()).asAngle + 90.0) % 90.0
+                    false -> cameraPosition.minus(points.midPoint()).asAngle % 90.0
+                }
+                perimeter * (angle / 90.0)
+                // TODO: add a weight based on the distance
+            }
             .sum() / perimeter()
+    }
+
+    private fun Pair<Euclidean2DPosition, Euclidean2DPosition>.isVertical(): Boolean {
+        val (p1, p2) = this
+        return p1.coordinates[0] == p2.coordinates[0]
     }
 
     private fun midPoint(p1: Euclidean2DPosition, p2: Euclidean2DPosition): Euclidean2DPosition {
         return Euclidean2DPosition((p1.coordinates[0] + p2.coordinates[0]) / 2, (p1.coordinates[1] + p2.coordinates[1]) / 2)
+    }
+    private fun Pair<Euclidean2DPosition, Euclidean2DPosition>.midPoint(): Euclidean2DPosition {
+        return midPoint(first, second)
     }
 
     /**
