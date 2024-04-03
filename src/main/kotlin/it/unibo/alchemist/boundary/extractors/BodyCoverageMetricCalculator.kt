@@ -7,81 +7,100 @@ import org.locationtech.jts.geom.Geometry
 import org.locationtech.jts.geom.GeometryFactory
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.util.AffineTransformation
-import org.locationtech.jts.math.Vector2D
+import org.locationtech.jts.util.GeometricShapeFactory
 import kotlin.math.PI
+import kotlin.math.pow
 
-class BodyCoverageMetricCalculator(private val bodyLength: Double, private val bodyWidth: Double) {
+class BodyCoverageMetricCalculator(
+    private val bodyLength: Double,
+    private val bodyWidth: Double,
+    private val segments: Int,
+) {
+    private val geometryFactory by lazy { GeometryFactory() }
+
     fun computeMetricForNode(
         bodyPositionAndAngle: Pair<Euclidean2DPosition, Euclidean2DPosition>,
-        camerasPositionsAndAngles: List<Pair<Euclidean2DPosition, Euclidean2DPosition>>
+        camerasPositionsAndAngles: List<Euclidean2DPosition>,
     ): Double {
-        val body = createBody(bodyPositionAndAngle.first, bodyPositionAndAngle.second)
-        val cameras = camerasPositionsAndAngles.map {
-            Coordinate(it.first.x, it.first.y) to Vector2D.create(it.second.x, it.second.y)
-        }
+        val body = createApproximatedEllipseForBody(
+            bodyPositionAndAngle.first,
+            bodyPositionAndAngle.second,
+            bodyWidth,
+            bodyLength,
+            segments,
+        )
+        val cameras = camerasPositionsAndAngles.map { Coordinate(it.x, it.y) }
 
-        val res = cameras.flatMap { visibleSidesFromCamera(body, it.first) }
-        val sideAndAngle = res.groupBy({ it.first }, { it.second }).mapValues { it.value.max() }
-        require(sideAndAngle.size <= 4) { "At most 4 sides can be detected" }
-        return sideAndAngle.map { (side, angle) -> side.length * normalizationFunction(angle) }.sum() / body.length
+        val segmentsAndAngles = cameras.flatMap { visibleSidesFromCamera(body, it) }
+            .groupBy({ it.first }, { it.second })
+            .mapValues { (_, angles) -> angles.max() }
+
+        require(segmentsAndAngles.size <= segments) { "At most $segments sides can be detected" }
+        return segmentsAndAngles.map { (side, angle) -> side.length * normalizationFunction(angle) }.sum() / body.length
     }
 
     private fun normalizationFunction(angle: Double): Double {
-        return angle * 2 / PI
+        val normalizedValue = angle * 2 / PI
+        return sigmoid(normalizedValue, 0.35, 5.0)
     }
 
-    private fun visibleSidesFromCamera(rectangle: Geometry, cameraPosition: Coordinate): List<Pair<LineString, Double>> {
-        val rectangleCoordinates = rectangle.coordinates
-        val segments = (0 until rectangleCoordinates.size - 1).mapNotNull {
-            val p1 = rectangleCoordinates[it]
-            val p2 = rectangleCoordinates[it + 1]
-            GeometryFactory().createLineString(arrayOf(p1, p2))
-        }.filter { isSegmentPerpendicularToPoint(it, cameraPosition) }
-        return when {
-            segments.size == 2 -> {
-                val res = segments.map {
-                    it to it.coordinates[0].distance(cameraPosition) + it.coordinates[1].distance(cameraPosition)
-                }.minByOrNull { it.second }!!.first to (PI / 2)
-                listOf(res)
+    private fun sigmoid(value: Double, m: Double, v: Double): Double {
+        return (1 + ((value * (1 - m)) / (m * (1 - value))).pow(-v)).pow(-1)
+    }
+
+    private fun visibleSidesFromCamera(body: Geometry, cameraPosition: Coordinate): List<Pair<LineString, Double>> {
+        val convexHull = body.convexHull()
+        if (convexHull.contains(geometryFactory.createPoint(cameraPosition))) {
+            return emptyList()
+        }
+        val visibleSegments = (0 until convexHull.coordinates.size - 1).mapNotNull {
+            val p1 = convexHull.coordinates[it]
+            val p2 = convexHull.coordinates[it + 1]
+            val segment1 = geometryFactory.createLineString(arrayOf(p1, cameraPosition))
+            val segment2 = geometryFactory.createLineString(arrayOf(p2, cameraPosition))
+            val intersection1 = segment1.intersection(convexHull)
+            val intersection2 = segment2.intersection(convexHull)
+            when {
+                intersection1.coordinates.size == 1 && intersection1.coordinates[0] == p1 &&
+                        intersection2.coordinates.size == 1 && intersection2.coordinates[0] == p2 ->
+                    geometryFactory.createLineString(arrayOf(p1, p2))
+                else -> null
             }
-            else -> {
-                (0 until rectangle.coordinates.size - 1).mapNotNull {
-                    val p1 = rectangleCoordinates[it]
-                    val p2 = rectangleCoordinates[it + 1]
-                    val side = GeometryFactory().createLineString(arrayOf(p1, p2))
-                    val angle = Angle.angleBetween(p1, p2, cameraPosition)
-                    (side to angle) to
-                        side.coordinates[0].distance(cameraPosition) + side.coordinates[1].distance(cameraPosition)
-                }.sortedBy { it.second }.take(2).map { it.first }
-            }
+        }
+        return visibleSegments.map { ls ->
+            val p1 = ls.getCoordinateN(0)
+            val p2 = ls.getCoordinateN(1)
+            val midPoint = (p1 to p2).midPoint()
+            val sortedPoint = listOf(p1, p2) // Used to determine the farthest point from the camera
+                .map { it to it.distance(cameraPosition) }
+                .sortedBy { -it.second }
+                .map { it.first }
+            require(sortedPoint.size == 2) { "There must be exactly two points" }
+            val angleBetweenSegmentAndCamera = Angle.angleBetween(sortedPoint[1], midPoint, cameraPosition)
+            geometryFactory.createLineString(arrayOf(p1, p2)) to angleBetweenSegmentAndCamera
         }
     }
 
-    private fun LineString.midPoint(): Coordinate {
-        val p1 = getCoordinateN(0)
-        val p2 = getCoordinateN(1)
+    private fun Pair<Coordinate, Coordinate>.midPoint(): Coordinate {
+        val (p1, p2) = this
         return Coordinate((p1.x + p2.x) / 2, (p1.y + p2.y) / 2)
     }
 
-    private fun isSegmentPerpendicularToPoint(segment: LineString, point: Coordinate): Boolean {
-        val p1 = segment.getCoordinateN(0)
-        val midPoint = segment.midPoint()
-        return Angle.angleBetween(p1, midPoint, point) == PI / 2
-    }
-
-    private fun createBody(position: Euclidean2DPosition, angle: Euclidean2DPosition): Geometry {
-        val factory = GeometryFactory()
-        val coordinates = arrayOf(
-            Coordinate(-bodyWidth / 2, bodyLength / 2),
-            Coordinate(bodyWidth / 2, bodyLength / 2),
-            Coordinate(bodyWidth / 2, -bodyLength / 2),
-            Coordinate(-bodyWidth / 2, -bodyLength / 2),
-            Coordinate(-bodyWidth / 2, bodyLength / 2)
-        )
-        val rectangle = factory.createPolygon(coordinates)
-        val rotation = AffineTransformation().rotate(angle.asAngle, 0.0, 0.0)
-        val translation = AffineTransformation().translate(position.x, position.y)
-        val rotated = rotation.transform(rectangle)
-        return translation.transform(rotated)
+    private fun createApproximatedEllipseForBody(
+        position: Euclidean2DPosition,
+        angle: Euclidean2DPosition,
+        width: Double,
+        height: Double,
+        segments: Int,
+    ): Geometry {
+        val ellipseFactory = GeometricShapeFactory().apply {
+            setNumPoints(segments)
+            setCentre(Coordinate(position.x, position.y))
+            setWidth(width)
+            setHeight(height)
+        }
+        val ellipse = ellipseFactory.createEllipse()
+        val rotation = AffineTransformation().rotate(angle.asAngle + (PI / 2), position.x, position.y)
+        return rotation.transform(ellipse)
     }
 }
