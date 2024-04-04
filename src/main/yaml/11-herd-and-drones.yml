@@ -170,6 +170,8 @@ export:
       - type: DistanceTraveled
       - type: BodyCoverage
         parameters: ["vision", "zebra", *bodyLen, *bodyWidth]
+      - type: NoisePerceived
+        parameters: [83.0, 16.0, 20.0]
 
 
 deployments:
