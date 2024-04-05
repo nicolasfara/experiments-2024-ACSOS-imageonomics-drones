@@ -1,5 +1,6 @@
 package it.unibo.alchemist.model.actions
 
+import it.unibo.alchemist.boundary.extractors.NoisePerceived
 import it.unibo.alchemist.model.Context
 import it.unibo.alchemist.model.Node
 import it.unibo.alchemist.model.Reaction
@@ -167,6 +168,12 @@ class HerdBehavior @JvmOverloads constructor(
     override fun execute() {
         alignDirection()
         environment.moveNode(node, getNextPosition())
+
+        if (node.contains(SimpleMolecule("zebra"))) {
+            val noisePerceivedProperty = node.properties.filterIsInstance<NoisePerceived<Any>>().firstOrNull()
+                ?: error("Property NoisePerceived not found.")
+            node.setConcentration(NoisePerceived.noisePerceivedMolecule, noisePerceivedProperty.computeSoundMetric())
+        }
     }
 
     override fun getContext(): Context = Context.LOCAL

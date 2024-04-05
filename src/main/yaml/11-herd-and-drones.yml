@@ -184,8 +184,10 @@ export:
       - type: DistanceTraveled
       - type: BodyCoverage
         parameters: ["vision", "zebra", *bodyLen, *bodyWidth, 6.0]
-      - type: NoisePerceived
-        parameters: [*soundPressureLevel, *distanceFromSourceMeasure, *droneHeight, *hearingThreshold]
+      - molecule: "NoisePerceived"
+        aggregators: [sum, mean, variance]
+        value-filter: "onlyFinite"
+
 
 
 deployments:
@@ -195,7 +197,10 @@ deployments:
       - molecule: zebra
         concentration: true
     programs: *herd
-    properties: *animalArea
+    properties:
+      - *animalArea
+      - type: NoisePerceived
+        parameters: [ *soundPressureLevel, *distanceFromSourceMeasure, *droneHeight, *hearingThreshold ]
   - type: Circle
     parameters: [ *NumCameras, 0, 0, 200]
     contents:
