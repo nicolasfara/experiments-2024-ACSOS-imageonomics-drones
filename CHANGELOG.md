@@ -1,3 +1,15 @@
+## [1.1.0](https://github.com/nicolasfara/experiments-imageonomics-drones/compare/1.0.0...1.1.0) (2024-04-05)
+
+
+### Features
+
+* add aggregators for NoisePerceived Metric ([b6e1669](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/b6e1669db351a772d48561a22b685032fbd301de))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.0.0 [skip ci] ([864a5fa](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/864a5fabe7f849a29242d047e5037335507533cf))
+
 ## 1.0.0 (2024-04-05)
 
 
