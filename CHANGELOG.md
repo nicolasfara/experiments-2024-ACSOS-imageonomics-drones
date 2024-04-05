@@ -1,3 +1,46 @@
+## 1.0.0 (2024-04-05)
+
+
+### Features
+
+* add first implementation for NoisePerceived metric ([a0aac52](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/a0aac52d18b436a9cd5ed2359685412519b7f49d))
+* add testing for Sound Formulas, add conversion from SoundPowerLevel to SoundPressureLevel ([3892ed8](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/3892ed86ef3b99b905f1170c8927a3816a227cd6))
+
+
+### Dependency updates
+
+* **deps:** update alchemist to v33.0.4 ([69d8294](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/69d8294289bdbfc4bfb872183d53bd8a3914a075))
+* **deps:** update alchemist to v33.0.5 ([40e7f4b](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/40e7f4ba0b937bba04112a0e8b619513f4b7aaa5))
+* **deps:** update dependency xarray to v2024.3.0 ([f046ede](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/f046ede9e35afb62e2d18360cce474e21779be78))
+* **deps:** update eclipse-temurin docker tag to v21 ([728ae1b](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/728ae1bccaaf95f677735e54cc028024cdfb7a7a))
+* **deps:** update node.js to 20.12 ([17aed0c](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/17aed0cb068e7d97d627abbcd9d21342d2e4a815))
+* **deps:** update plugin com.gradle.enterprise to v3.17 ([1a9f0bf](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/1a9f0bf2c20038bbea7f3a74967186d7bfbe7c00))
+* **deps:** update plugin tasktree to v3 ([cbd7813](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/cbd78133a7c84e8760050e5139c6cce110a445f6))
+* **deps:** update smile to v3.0.3 ([c999e9c](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/c999e9c4e4087e547efae9c7523415bcb7b252ab))
+* **deps:** update smile to v3.1.0 ([8ff8440](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/8ff8440c5153d50d8ccf20403ca8697343f28664))
+
+
+### Build and continuous integration
+
+* add swing dependency also in headless environment ([f242a80](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/f242a8048a8a5d8dfc930899993e98b4f0c5f790))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.12 ([065e2dd](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/065e2dd302fec8b10ab99f98f309b482a707fa5f))
+* disable simulation via docker in CI ([36bcc04](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/36bcc04752366aeece38efb6a3047cbe3537e8b9))
+* fix variables ([caaaf57](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/caaaf573ca52988481e830733c5282d2077159ae))
+* rename project ([a821f23](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/a821f235a36db8a8d6a308b1d7203d080b315813))
+* setup code experiments from Denys' repository ([d8b88f9](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/d8b88f992300e1ea9457905afcc54d80a38af1e7))
+
+
+### General maintenance
+
+* add library for geometric transformation ([6ec63e0](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/6ec63e08d3fcee1ae0fe163590bb8e9bfd4526e9))
+* add termination time ([4661aed](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/4661aede60e3dad54cfc2c30a3040665de0ed634))
+* **docker:** copy libs folder inside container ([7f197f7](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/7f197f70931ef43c70d860362425b72abedef3ea))
+* **docker:** fix docker images name ([b013a7f](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/b013a7ff2a443450ccb5f1bc1ecf1270c53d27fa))
+* extract metric in a separate class ([95824cb](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/95824cbab08223d83a6f27ef62c6437e5fffc08c))
+* first stub for body coverage metric ([6573574](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/657357458ff3736e6e86f7fa347ad874b9044f61))
+* **resources:** add missing resources ([56b887c](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/56b887cf6b621e70c5edffffda4d0f22584d3ff0))
+* stub metric using JTS ([5aee2a1](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/5aee2a1e654fea4c9207bd1a9f3291ee8b3ac3c2))
+
 ## [1.2.1](https://github.com/DanySK/alchemist-experiments-bootstrap/compare/1.2.0...1.2.1) (2024-02-09)
 
 
