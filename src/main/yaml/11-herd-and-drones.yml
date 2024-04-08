@@ -88,6 +88,8 @@ variables:
     formula: |
       import kotlin.math.*
       soundPowerLevel - abs(10.0 * log10(1.0 / (4 * PI * distanceFromSourceMeasure.pow(2))))
+  zebraEllipseBodySegments: &zebraEllipseBodySegments
+    formula: 8.0
 
 ##### Other
   CamHerdRatio:
@@ -182,13 +184,12 @@ export:
       - type: CamerasKCoverage
         parameters: ["vision", "zebra", *MaxCamerasPerTarget]
       - type: DistanceTraveled
-      - type: BodyCoverage
-        parameters: ["vision", "zebra", *bodyLen, *bodyWidth, 6.0]
       - molecule: "NoisePerceived"
         aggregators: [sum, mean, variance]
         value-filter: "onlyFinite"
-
-
+      - molecule: "BodyCoverage"
+        aggregators: [sum, mean, variance]
+        value-filter: "onlyFinite"
 
 deployments:
   - type: GroupsDeployment
@@ -201,6 +202,8 @@ deployments:
       - *animalArea
       - type: NoisePerceived
         parameters: [ *soundPressureLevel, *distanceFromSourceMeasure, *droneHeight, *hearingThreshold ]
+      - type: BodyCoverage
+        parameters: [ "vision", "zebra", *bodyLen, *bodyWidth, *zebraEllipseBodySegments ]
   - type: Circle
     parameters: [ *NumCameras, 0, 0, 200]
     contents:

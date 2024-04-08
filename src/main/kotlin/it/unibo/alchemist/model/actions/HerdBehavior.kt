@@ -1,5 +1,6 @@
 package it.unibo.alchemist.model.actions
 
+import it.unibo.alchemist.boundary.extractors.BodyCoverage
 import it.unibo.alchemist.boundary.extractors.NoisePerceived
 import it.unibo.alchemist.model.Context
 import it.unibo.alchemist.model.Node
@@ -170,9 +171,13 @@ class HerdBehavior @JvmOverloads constructor(
         environment.moveNode(node, getNextPosition())
 
         if (node.contains(SimpleMolecule("zebra"))) {
-            val noisePerceivedProperty = node.properties.filterIsInstance<NoisePerceived<Any>>().firstOrNull()
-                ?: error("Property NoisePerceived not found.")
+            val noisePerceivedProperty = node.properties.filterIsInstance<NoisePerceived<*>>().firstOrNull()
+                ?: error("Property ${NoisePerceived::class} not found.")
+            val bodyCoverageProperty = node.properties.filterIsInstance<BodyCoverage<*>>().firstOrNull()
+                ?: error("Property ${BodyCoverage::class} not found.")
+
             node.setConcentration(NoisePerceived.noisePerceivedMolecule, noisePerceivedProperty.computeSoundMetric())
+            node.setConcentration(BodyCoverage.bodyCoverageMolecule, bodyCoverageProperty.computeBodyCoverageMetric())
         }
     }
 
