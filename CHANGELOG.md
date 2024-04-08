@@ -1,3 +1,20 @@
+## [1.2.0](https://github.com/nicolasfara/experiments-imageonomics-drones/compare/1.1.0...1.2.0) (2024-04-08)
+
+
+### Features
+
+* implement body coverage metric ([72f362c](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/72f362ccc57005aa76d9001be661ce2b8fe3c77a))
+
+
+### Dependency updates
+
+* **deps:** update dependency matplotlib to v3.8.4 ([fc247bd](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/fc247bd319aca17ce0a29ea50219f246486f17cc))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.1.0 [skip ci] ([74ca63a](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/74ca63a33db43be10b09ec6502e234f2865b759d))
+
 ## [1.1.0](https://github.com/nicolasfara/experiments-imageonomics-drones/compare/1.0.0...1.1.0) (2024-04-05)
 
 
