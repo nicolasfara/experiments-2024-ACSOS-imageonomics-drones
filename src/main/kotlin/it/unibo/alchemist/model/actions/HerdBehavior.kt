@@ -1,6 +1,7 @@
 package it.unibo.alchemist.model.actions
 
 import it.unibo.alchemist.boundary.extractors.BodyCoverage
+import it.unibo.alchemist.boundary.extractors.CentroidQuality
 import it.unibo.alchemist.boundary.extractors.NoisePerceived
 import it.unibo.alchemist.model.Context
 import it.unibo.alchemist.model.Node
@@ -175,9 +176,11 @@ class HerdBehavior @JvmOverloads constructor(
                 ?: error("Property ${NoisePerceived::class} not found.")
             val bodyCoverageProperty = node.properties.filterIsInstance<BodyCoverage<*>>().firstOrNull()
                 ?: error("Property ${BodyCoverage::class} not found.")
-
+            val centroidQualityProperty = node.properties.filterIsInstance<CentroidQuality<*>>().firstOrNull()
+                ?: error("Property ${CentroidQuality::class} not found.")
             node.setConcentration(NoisePerceived.noisePerceivedMolecule, noisePerceivedProperty.computeSoundMetric())
             node.setConcentration(BodyCoverage.bodyCoverageMolecule, bodyCoverageProperty.computeBodyCoverageMetric())
+            node.setConcentration(CentroidQuality.bodyCoverageMolecule, centroidQualityProperty.computeCentroidQuality())
         }
     }
 

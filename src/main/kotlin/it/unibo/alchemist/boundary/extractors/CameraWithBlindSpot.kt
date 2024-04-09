@@ -10,7 +10,7 @@ import java.awt.geom.Arc2D
 import kotlin.math.atan2
 
 class CameraWithBlindSpot<T>(
-    private val environment: Physics2DEnvironment<T>,
+    val environment: Physics2DEnvironment<T>,
     override val node: Node<T>,
     val blindSpotDistance: Double,
     val fovDistance: Double,
@@ -62,6 +62,7 @@ class CameraWithBlindSpot<T>(
     fun transformShapeToEnvironmentPosition(): Shape {
         val heading = environment.getHeading(node)
         val affineTransform = AffineTransform()
+        affineTransform.translate(environment.getPosition(node).x, -environment.getPosition(node).y)
         affineTransform.rotate(-atan2(heading.y, heading.x))
         return affineTransform.createTransformedShape(shapeRepresentation())
     }

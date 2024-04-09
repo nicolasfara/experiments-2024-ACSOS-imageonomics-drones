@@ -12,9 +12,8 @@ class CentroidQualityMetricCalculator {
     private val geometry by lazy { GeometryFactory() }
     private val flatness = 1.0
 
-    fun computeQualityMetric(animalPosition: Euclidean2DPosition, cameras: List<CameraWithBlindSpot<*>>): Double {
-        return 0.0
-    }
+    fun computeQualityMetric(animalPosition: Euclidean2DPosition, cameras: List<CameraWithBlindSpot<Any>>): Double =
+        cameras.maxOfOrNull { it.metricForCamera(animalPosition) } ?: 0.0
 
 
     private fun CameraWithBlindSpot<*>.geometryRepresentation(): Geometry =
@@ -31,9 +30,9 @@ class CentroidQualityMetricCalculator {
                 ?: error("It should have at least one coordinate")
     }
 
-    private fun CameraWithBlindSpot<*>.metricForCamera(animalPosition: Euclidean2DPosition): Double {
+    private fun CameraWithBlindSpot<Any>.metricForCamera(animalPosition: Euclidean2DPosition): Double {
         val worstCaseVector = worstCaseCoordinateVector()
         val animalVector = Vector2D(animalPosition.x - centroid().x, animalPosition.y - centroid().y)
-        return worstCaseVector.angleTo(animalVector)
+        return (worstCaseVector.length() - animalVector.length()) / worstCaseVector.length()
     }
 }

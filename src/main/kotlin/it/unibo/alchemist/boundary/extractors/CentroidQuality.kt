@@ -21,19 +21,20 @@ class CentroidQuality<T>(
     private val visionMolecule by lazy { SimpleMolecule(visionMoleculeName) }
     private val targetMolecule by lazy { SimpleMolecule(targetMoleculeName) }
     private val metricCalculator = CentroidQualityMetricCalculator()
+    companion object {
+        val bodyCoverageMolecule = SimpleMolecule("CentroidQuality")
+    }
+
     override fun cloneOnNewNode(node: Node<T>): NodeProperty<T> = CentroidQuality(environment, node, visionMolecule.name, targetMolecule.name)
 
     fun computeCentroidQuality(): Double {
-        require(environment is Physics2DEnvironment) {
-            "Expected a Physics2DEnvironment but got ${environment::class}"
-        }
         val nodes = environment.nodes
         val visibleCameras = nodes.filter { n -> n.isCamera() && n.getVisibleTargets().map { it.node }.contains(node) }
         return if(node.isTarget()) {
             metricCalculator.computeQualityMetric(
                 environment.getPosition(node),
-                visibleCameras.map { node.properties.filterIsInstance<CameraWithBlindSpot<*>>().firstOrNull()
-                    ?: error("Property ${NoisePerceived::class} not found.") }
+                visibleCameras.map { it.properties.filterIsInstance<CameraWithBlindSpot<Any>>().firstOrNull()
+                    ?: error("Property ${CameraWithBlindSpot::class} not found.") }
             )
         } else {
             Double.NaN
@@ -42,7 +43,6 @@ class CentroidQuality<T>(
     private fun Node<*>.isTarget() = contains(targetMolecule) && getConcentration(targetMolecule).toBoolean()
 
     private fun Node<*>.isCamera() = contains(visionMolecule)
-
 
     private fun Node<T>.getVisibleTargets() =
         with(getConcentration(visionMolecule)) {
