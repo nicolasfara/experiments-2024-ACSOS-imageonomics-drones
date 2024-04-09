@@ -59,7 +59,7 @@ class CameraWithBlindSpot<T>(
         return areaFov
     }
 
-    fun transformToEnvironmentPosition(): Shape {
+    fun transformShapeToEnvironmentPosition(): Shape {
         val heading = environment.getHeading(node)
         val affineTransform = AffineTransform()
         affineTransform.rotate(-atan2(heading.y, heading.x))
@@ -86,5 +86,4 @@ class CameraWithBlindSpot<T>(
             rotate(environment.getHeading(node))
         },
     )
-
 }
