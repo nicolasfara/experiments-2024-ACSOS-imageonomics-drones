@@ -8,31 +8,18 @@ import org.locationtech.jts.geom.Geometry
 import org.locationtech.jts.geom.GeometryFactory
 import org.locationtech.jts.math.Vector2D
 
+typealias CameraQualityInformation = Pair<Coordinate, Coordinate>
+fun CameraQualityInformation.centroid(): Coordinate = this.first
+fun CameraQualityInformation.furthestPoint(): Coordinate = this.second
+fun CameraQualityInformation.worstCaseCoordinateVector(): Vector2D =
+    Vector2D(this.furthestPoint().x - this.centroid().x, this.furthestPoint().y - this.centroid().y)
 class CentroidQualityMetricCalculator {
-    private val geometry by lazy { GeometryFactory() }
-    private val flatness = 1.0
-
-    fun computeQualityMetric(animalPosition: Euclidean2DPosition, cameras: List<CameraWithBlindSpot<Any>>): Double =
+    fun computeQualityMetric(animalPosition: Coordinate, cameras: List<CameraQualityInformation>): Double =
         cameras.maxOfOrNull { it.metricForCamera(animalPosition) } ?: 0.0
 
-
-    private fun CameraWithBlindSpot<*>.geometryRepresentation(): Geometry =
-        ShapeReader.read(transformShapeToEnvironmentPosition(), flatness, geometry)
-
-    private fun CameraWithBlindSpot<*>.centroid(): Coordinate =
-        Centroid.getCentroid(geometryRepresentation())
-    private fun CameraWithBlindSpot<*>.worstCaseCoordinateVector(): Vector2D {
-        val cameraShape = this.geometryRepresentation()
-        val centroid = this.centroid()
-        return cameraShape.coordinates.map { it to it.distance(centroid) }
-            .maxByOrNull { it.second }
-                ?.let { (coordinate, _) -> Vector2D(coordinate.x - centroid.x, coordinate.y - centroid.y) }
-                ?: error("It should have at least one coordinate")
-    }
-
-    private fun CameraWithBlindSpot<Any>.metricForCamera(animalPosition: Euclidean2DPosition): Double {
-        val worstCaseVector = worstCaseCoordinateVector()
-        val animalVector = Vector2D(animalPosition.x - centroid().x, animalPosition.y - centroid().y)
+    private fun CameraQualityInformation.metricForCamera(animalPosition: Coordinate): Double {
+        val worstCaseVector = this.worstCaseCoordinateVector()
+        val animalVector = Vector2D(animalPosition.x - this.centroid().x, animalPosition.y - this.centroid().y)
         return (worstCaseVector.length() - animalVector.length()) / worstCaseVector.length()
     }
 }

@@ -7,10 +7,12 @@ import it.unibo.alchemist.model.molecules.SimpleMolecule
 import it.unibo.alchemist.model.physics.environments.Physics2DEnvironment
 import it.unibo.alchemist.model.positions.Euclidean2DPosition
 import it.unibo.experiment.toBoolean
-import java.awt.Shape
-import java.awt.geom.AffineTransform
-import java.awt.geom.Arc2D
-import kotlin.math.atan2
+import org.locationtech.jts.algorithm.Centroid
+import org.locationtech.jts.awt.ShapeReader
+import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.Geometry
+import org.locationtech.jts.geom.GeometryFactory
+import org.locationtech.jts.math.Vector2D
 
 class CentroidQuality<T>(
     private val environment: Physics2DEnvironment<T>,
@@ -20,9 +22,12 @@ class CentroidQuality<T>(
 ): NodeProperty<T> {
     private val visionMolecule by lazy { SimpleMolecule(visionMoleculeName) }
     private val targetMolecule by lazy { SimpleMolecule(targetMoleculeName) }
+    private val geometry by lazy { GeometryFactory() }
     private val metricCalculator = CentroidQualityMetricCalculator()
+
     companion object {
         val bodyCoverageMolecule = SimpleMolecule("CentroidQuality")
+        private val flatness = 1.0
     }
 
     override fun cloneOnNewNode(node: Node<T>): NodeProperty<T> = CentroidQuality(environment, node, visionMolecule.name, targetMolecule.name)
@@ -32,8 +37,9 @@ class CentroidQuality<T>(
         val visibleCameras = nodes.filter { n -> n.isCamera() && n.getVisibleTargets().map { it.node }.contains(node) }
         return if(node.isTarget()) {
             metricCalculator.computeQualityMetric(
-                environment.getPosition(node),
+                environment.getPosition(node).asCoordinate(),
                 visibleCameras.map { it.properties.filterIsInstance<CameraWithBlindSpot<Any>>().firstOrNull()
+                    ?.asCameraQualityInformation()
                     ?: error("Property ${CameraWithBlindSpot::class} not found.") }
             )
         } else {
@@ -57,4 +63,20 @@ class CentroidQuality<T>(
             @Suppress("UNCHECKED_CAST")
             (this as Iterable<VisibleNode<T, *>>).filter { it.node.isTarget() }
         }
+
+    private fun Euclidean2DPosition.asCoordinate(): Coordinate = Coordinate(x, y)
+    private fun CameraWithBlindSpot<*>.geometryRepresentation(): Geometry =
+        ShapeReader.read(transformShapeToEnvironmentPosition(), flatness, geometry)
+
+    private fun CameraWithBlindSpot<*>.centroid(): Coordinate =
+        Centroid.getCentroid(geometryRepresentation())
+    private fun CameraWithBlindSpot<*>.worstCaseCoordinateVector(): Coordinate {
+        val cameraShape = this.geometryRepresentation()
+        val centroid = this.centroid()
+        return cameraShape.coordinates.map { it to it.distance(centroid) }
+            .maxByOrNull { it.second }
+            ?.let { (coordinate, _) -> coordinate }
+            ?: error("It should have at least one coordinate")
+    }
+    private fun CameraWithBlindSpot<Any>.asCameraQualityInformation(): CameraQualityInformation = this.centroid() to this.worstCaseCoordinateVector()
 }
