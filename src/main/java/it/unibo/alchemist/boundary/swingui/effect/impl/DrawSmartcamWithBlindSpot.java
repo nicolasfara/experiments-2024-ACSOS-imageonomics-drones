@@ -1,9 +1,8 @@
 package it.unibo.alchemist.boundary.swingui.effect.impl;
 
-import it.unibo.alchemist.boundary.extractors.FieldOfView2DWithBlindSpot;
+import it.unibo.alchemist.boundary.extractors.CameraWithBlindSpot;
 import it.unibo.alchemist.boundary.swingui.effect.api.Effect;
 import it.unibo.alchemist.boundary.ui.api.Wormhole2D;
-import it.unibo.alchemist.model.actions.CameraSeeWithBlindSpot;
 import it.unibo.alchemist.model.geometry.AwtShapeCompatible;
 import it.unibo.alchemist.model.geometry.Shape;
 import it.unibo.alchemist.model.molecules.SimpleMolecule;
@@ -97,8 +96,8 @@ public final class DrawSmartcamWithBlindSpot implements Effect {
         graphics.setColor(Color.BLUE);
         node.getProperties()
                 .stream()
-                .filter(property -> property instanceof FieldOfView2DWithBlindSpot<?>)
-                .map(property -> (FieldOfView2DWithBlindSpot<?>) property)
+                .filter(property -> property instanceof CameraWithBlindSpot<?>)
+                .map(property -> (CameraWithBlindSpot<?>) property)
                 .forEach(property -> {
                     final double angle = property.getAperture();
                     final double startAngle = -angle / 2;

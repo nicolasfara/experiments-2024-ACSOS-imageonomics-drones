@@ -5,7 +5,7 @@ import it.unibo.alchemist.model.NodeProperty
 import it.unibo.alchemist.model.physics.environments.Physics2DEnvironment
 import it.unibo.alchemist.model.positions.Euclidean2DPosition
 
-class FieldOfView2DWithBlindSpot<T>(
+class CameraWithBlindSpot<T>(
     private val environment: Physics2DEnvironment<T>,
     override val node: Node<T>,
     val blindSpotDistance: Double,
@@ -47,7 +47,5 @@ class FieldOfView2DWithBlindSpot<T>(
         return intersectFoV && !intersectBlindSpot
     }
 
-    override fun cloneOnNewNode(node: Node<T>): NodeProperty<T> {
-        TODO("Not yet implemented")
-    }
+    override fun cloneOnNewNode(node: Node<T>): NodeProperty<T> = CameraWithBlindSpot(environment, node, blindSpotDistance, fovDistance, aperture)
 }

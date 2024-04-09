@@ -4,7 +4,7 @@ import it.unibo.alchemist.boundary.ui.api.Wormhole2D
 import it.unibo.alchemist.model.Environment
 import it.unibo.alchemist.model.Node
 import it.unibo.alchemist.model.Position2D
-import it.unibo.alchemist.model.actions.CameraSeeWithBlindSpot
+import it.unibo.alchemist.model.actions.CameraCaptureAnimals
 import it.unibo.alchemist.model.molecules.SimpleMolecule
 import it.unibo.alchemist.model.physics.environments.Physics2DEnvironment
 import it.unibo.alchemist.model.positions.Euclidean2DPosition
@@ -75,7 +75,7 @@ open class DrawVisibleClusters : AbstractDrawOnce() {
             .flatMap { n ->
                 n.reactions
                     .flatMap { it.actions }
-                    .filterIsInstance<CameraSeeWithBlindSpot>()
+                    .filterIsInstance<CameraCaptureAnimals>()
                     .flatMap { it.seenTargets }
             }
             .toSet()

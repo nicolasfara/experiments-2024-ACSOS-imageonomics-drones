@@ -2,7 +2,7 @@ package it.unibo.experiment.clustering
 
 import it.unibo.alchemist.model.Position2D
 import it.unibo.alchemist.model.VisibleNode
-import it.unibo.alchemist.model.actions.CameraSeeWithBlindSpot
+import it.unibo.alchemist.model.actions.CameraCaptureAnimals
 import it.unibo.alchemist.model.physics.environments.Physics2DEnvironment
 import it.unibo.alchemist.model.positions.Euclidean2DPosition
 import it.unibo.alchemist.model.protelis.AlchemistExecutionContext
@@ -85,7 +85,7 @@ object HerdExperimentUtils {
         val node = (context.deviceUID as ProtelisDevice<*>).node
         return node.reactions
             .flatMap { it.actions }
-            .filterIsInstance<CameraSeeWithBlindSpot>()
+            .filterIsInstance<CameraCaptureAnimals>()
             .first().isVisible(point)
     }
 

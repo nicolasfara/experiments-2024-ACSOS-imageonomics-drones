@@ -1,7 +1,7 @@
 package it.unibo.alchemist.model.actions
 
 import it.unibo.alchemist.boundary.extractors.BodyCoverage
-import it.unibo.alchemist.boundary.extractors.FieldOfView2DWithBlindSpot
+import it.unibo.alchemist.boundary.extractors.CameraWithBlindSpot
 import it.unibo.alchemist.model.Context
 import it.unibo.alchemist.model.Molecule
 import it.unibo.alchemist.model.Node
@@ -10,7 +10,6 @@ import it.unibo.alchemist.model.molecules.SimpleMolecule
 import it.unibo.alchemist.model.nodes.VisibleNodeImpl
 import it.unibo.alchemist.model.physics.environments.Physics2DEnvironment
 import it.unibo.alchemist.model.positions.Euclidean2DPosition
-import java.lang.Math.toRadians
 
 /**
  * Checks nodes in the [environment] and writes in [outputMolecule]
@@ -22,14 +21,14 @@ import java.lang.Math.toRadians
  * @param outputMolecule for visible nodes.
  * @param filterByMolecule allows to consider only target nodes.
  */
-class CameraSeeWithBlindSpot @JvmOverloads constructor(
+class CameraCaptureAnimals @JvmOverloads constructor(
     node: Node<Any>,
     private val environment: Physics2DEnvironment<Any>,
     private val outputMolecule: Molecule = SimpleMolecule("vision"),
     private val filterByMolecule: Molecule? = null,
 ) : AbstractAction<Any>(node) {
 
-    private val fieldOfView = node.properties.filterIsInstance<FieldOfView2DWithBlindSpot<Any>>().firstOrNull()
+    private val fieldOfView = node.properties.filterIsInstance<CameraWithBlindSpot<Any>>().firstOrNull()
         ?: error("Property ${BodyCoverage::class} not found.")
 
     /**
@@ -46,7 +45,7 @@ class CameraSeeWithBlindSpot @JvmOverloads constructor(
     }
 
     override fun cloneAction(node: Node<Any>, reaction: Reaction<Any>) =
-        CameraSeeWithBlindSpot(node, environment, outputMolecule, filterByMolecule)
+        CameraCaptureAnimals(node, environment, outputMolecule, filterByMolecule)
 
     override fun execute() {
         var seen = fieldOfView.influentialNodes()
