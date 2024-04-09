@@ -99,18 +99,9 @@ public final class DrawSmartcamWithBlindSpot implements Effect {
                 .filter(property -> property instanceof CameraWithBlindSpot<?>)
                 .map(property -> (CameraWithBlindSpot<?>) property)
                 .forEach(property -> {
-                    final double angle = property.getAperture();
-                    final double startAngle = -angle / 2;
-                    final double d = property.getFovDistance();
-                    final java.awt.Shape fov = new Arc2D.Double(-d, -d, d * 2, d * 2, startAngle, angle, Arc2D.PIE);
-                    final double sd = property.getBlindSpotDistance();
-                    final java.awt.Shape blindSpotPie = new Arc2D.Double(-sd, -sd, sd * 2, sd * 2, startAngle, angle, Arc2D.PIE);
-                    final java.awt.Shape blindSpotOpen = new Arc2D.Double(-sd, -sd, sd * 2, sd * 2, startAngle + 0.1, angle + 0.1 , Arc2D.OPEN);
-                    graphics.setColor(transparentBlack);
-                    graphics.fill(transform.createTransformedShape(blindSpotPie));
+                    var shape = property.shapeRepresentation();
                     graphics.setColor(Color.BLUE);
-                    graphics.draw(transform.createTransformedShape(fov));
-                    graphics.draw(transform.createTransformedShape(blindSpotOpen));
+                    graphics.draw(transform.createTransformedShape(shape));
                 });
     }
 

@@ -9,7 +9,7 @@ import java.awt.geom.AffineTransform
 import java.awt.geom.Arc2D
 import kotlin.math.atan2
 
-class CameraWithBlindSpot<T>(
+class CentroidQuality<T>(
     private val environment: Physics2DEnvironment<T>,
     override val node: Node<T>,
     val blindSpotDistance: Double,
@@ -23,7 +23,7 @@ class CameraWithBlindSpot<T>(
         require(blindSpotDistance in 0.0..fovDistance)
     }
 
-    override fun cloneOnNewNode(node: Node<T>): NodeProperty<T> = CameraWithBlindSpot(environment, node, blindSpotDistance, fovDistance, aperture)
+    override fun cloneOnNewNode(node: Node<T>): NodeProperty<T> = CentroidQuality(environment, node, blindSpotDistance, fovDistance, aperture)
 
     fun influentialNodes(): List<Node<T>> = environment.getNodesWithin(
         fovShape.transformed {
