@@ -120,7 +120,7 @@ _drone: &drone
       - type: InitHeading
         parameters: [ ]
       - type: CameraSeeWithBlindSpot
-        parameters: [ *FoVBlindSpotDistance, *FoVDistance, *FoVAngle, vision ]
+        parameters: [ vision ]
       - type: HeadTowardTarget
         parameters: [ heading, *RotationSpeed ]
       - type: MoveToTarget
@@ -228,6 +228,9 @@ deployments:
       - molecule: ClusteringDistance
         concentration: *ClusteringDistance
     programs: *drone
+    properties:
+      - type: FieldOfView2DWithBlindSpot
+        parameters: [ *FoVBlindSpotDistance, *FoVDistance, *FoVAngle, vision ]
 #  - type: SpecificPositions
 #    parameters: [ [ 0,0 ],[ 1000, 0 ], [ -1000, 0 ], [ 0,1000 ], [ 0, -1000 ] ]
 #    contents:

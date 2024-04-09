@@ -1,5 +1,6 @@
 package it.unibo.alchemist.boundary.swingui.effect.impl;
 
+import it.unibo.alchemist.boundary.extractors.FieldOfView2DWithBlindSpot;
 import it.unibo.alchemist.boundary.swingui.effect.api.Effect;
 import it.unibo.alchemist.boundary.ui.api.Wormhole2D;
 import it.unibo.alchemist.model.actions.CameraSeeWithBlindSpot;
@@ -94,17 +95,16 @@ public final class DrawSmartcamWithBlindSpot implements Effect {
     ) {
         final AffineTransform transform = getTransform(x, y, zoom, getRotation(node, environment));
         graphics.setColor(Color.BLUE);
-        node.getReactions()
+        node.getProperties()
                 .stream()
-                .flatMap(r -> r.getActions().stream())
-                .filter(a -> a instanceof CameraSeeWithBlindSpot)
-                .map(a -> (CameraSeeWithBlindSpot) a)
-                .forEach(a -> {
-                    final double angle = a.getAngle();
+                .filter(property -> property instanceof FieldOfView2DWithBlindSpot<?>)
+                .map(property -> (FieldOfView2DWithBlindSpot<?>) property)
+                .forEach(property -> {
+                    final double angle = property.getAperture();
                     final double startAngle = -angle / 2;
-                    final double d = a.getDistance();
+                    final double d = property.getFovDistance();
                     final java.awt.Shape fov = new Arc2D.Double(-d, -d, d * 2, d * 2, startAngle, angle, Arc2D.PIE);
-                    final double sd = a.getBlindSpotDistance();
+                    final double sd = property.getBlindSpotDistance();
                     final java.awt.Shape blindSpotPie = new Arc2D.Double(-sd, -sd, sd * 2, sd * 2, startAngle, angle, Arc2D.PIE);
                     final java.awt.Shape blindSpotOpen = new Arc2D.Double(-sd, -sd, sd * 2, sd * 2, startAngle + 0.1, angle + 0.1 , Arc2D.OPEN);
                     graphics.setColor(transparentBlack);
