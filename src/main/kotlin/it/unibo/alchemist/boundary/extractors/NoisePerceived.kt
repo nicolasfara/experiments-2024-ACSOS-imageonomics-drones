@@ -75,6 +75,5 @@ class NoisePerceived<T>(
         return hypot(onGroundDistance, height)
     }
 
-    private fun Node<*>.isTarget() = contains(targetMolecule) && getConcentration(targetMolecule).toBoolean()
     override fun cloneOnNewNode(node: Node<T>): NodeProperty<T> = this
 }
