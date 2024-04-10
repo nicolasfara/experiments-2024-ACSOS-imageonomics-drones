@@ -1,3 +1,15 @@
+## [1.4.0](https://github.com/nicolasfara/experiments-imageonomics-drones/compare/1.3.0...1.4.0) (2024-04-10)
+
+
+### Features
+
+* prepare for first batch for simulations [@nicolasfara](https://github.com/nicolasfara) check plz ([7bfea86](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/7bfea86edc5b698b033bda7714544a5d9a40f358))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.3.0 [skip ci] ([d8551a7](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/d8551a7157e16d25aa8e4f5eaa897624fce416a2))
+
 ## [1.3.0](https://github.com/nicolasfara/experiments-imageonomics-drones/compare/1.2.0...1.3.0) (2024-04-10)
 
 
