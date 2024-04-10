@@ -68,8 +68,10 @@ variables:
   Algorithm: &Algorithm
     type: ListOf
     parameters:
+      - "sm_av"
       - "ff_linpro_c"
       - "bc_re_c"
+      - "ff_linpro"
       - "ff_linpro_ac"
   ClusteringDistance: &ClusteringDistance
     type: ListOf
