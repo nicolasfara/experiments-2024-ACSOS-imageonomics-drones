@@ -124,7 +124,7 @@ File(rootProject.rootDir.path + "/src/main/yaml").listFiles()
                 """
                     launcher: {
                         parameters: {
-                            batch: [ ],
+                            batch: [ Algorithm, CamHerdRatio, NumberOfHerds],
                             showProgress: true,
                             autoStart: true,
                             parallelism: $threadCount,
