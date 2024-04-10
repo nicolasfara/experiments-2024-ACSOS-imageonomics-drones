@@ -1,3 +1,42 @@
+## [1.3.0](https://github.com/nicolasfara/experiments-imageonomics-drones/compare/1.2.0...1.3.0) (2024-04-10)
+
+
+### Features
+
+* expose shape of the camera ([c029a84](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/c029a84ead23ad6ee38bab94d451d1c8b62d7dfb))
+* first version for centroid quality measurement ([80b297a](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/80b297a883bae784430bbcffab4deaf3364d063a))
+* move camera as property ([61fb34c](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/61fb34cf5ea79f777677ecee9a8e7b71326c2339))
+* start on working for the camera quality based on the centroid ([7505aea](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/7505aea8fdba9647aba9650ee31c0746beea0107))
+
+
+### Dependency updates
+
+* **deps:** update alchemist to v33.0.7 ([046e5da](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/046e5da3c5b0e508de795c54fdd697b2c0e93663))
+* **deps:** update plugin com.gradle.enterprise to v3.17.1 ([707b38f](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/707b38fdcbafc4f35b61187d94b41b1bc37d9d3e))
+
+
+### Tests
+
+* add test for centroid based quality metric ([86c2599](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/86c2599439786b266e2d48e46ff15962653e86fb))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.14 ([0857b99](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/0857b9959639401670616403ed5e0a4b21da2952))
+
+
+### General maintenance
+
+* leave only the main simulation ([f93253e](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/f93253e7e571da92c65aff896e7890eba677a9f1))
+* **release:** update gradle.properties .env versions to 1.2.0 [skip ci] ([ace823e](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/ace823ef3c5936b73c36e8b16ce2d9c8cb47f791))
+* remove other simulation and update the effects accordingly ([64c3f80](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/64c3f80ed71f17a73d29eb765ee734462e289a0d))
+
+
+### Refactoring
+
+* better name for camera and camera see action ([10a3dec](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/10a3dec70d47f5ed87d15fa60bc66664f36a196b))
+* remove extension method (isTarget()) in noisePerceived ([f5c94de](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/f5c94de53cd4a6e6429360a5a8942d0a42c1add3))
+
 ## [1.2.0](https://github.com/nicolasfara/experiments-imageonomics-drones/compare/1.1.0...1.2.0) (2024-04-08)
 
 
