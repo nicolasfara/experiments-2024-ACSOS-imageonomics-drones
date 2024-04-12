@@ -74,9 +74,9 @@ variables:
       - "ff_linpro"
       - "ff_linpro_ac"
   ClusteringDistance: &ClusteringDistance
-    type: ListOf
-    parameters: [60]
-#    formula: 60
+#    type: ListOf
+#    parameters: [60]
+    formula: 60
   MaxCamerasPerTarget: &MaxCamerasPerTarget
     formula: 2
   droneHeight: &droneHeight
@@ -96,10 +96,10 @@ variables:
 ##### Other
   CamHerdRatio:
     type: ArbitraryVariable
-    parameters: [1.5, 0.5, 1.0, 1.5, 2.0]
+    parameters: [2, 0.5, 1.0, 2.0, 3.0]
   NumberOfHerds: &HerdNumber
     type: ArbitraryVariable
-    parameters: [8, 2, 4, 6, 8]
+    parameters: [8, 2, 4, 8]
   NumCameras: &NumCameras
     formula: Math.ceil((CamHerdRatio)*NumberOfHerds)
     language: kotlin
@@ -108,8 +108,10 @@ variables:
   EnvironmentRadius: &EnvironmentRadius
     formula: EnvironmentSize / 2
   Seed: &Seed
-    type: ListOf
-    parameters: [ 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    min: 1
+    max: 150
+    step: 1
+    default: 0
 
 seeds:
   scenario: *Seed
@@ -187,13 +189,13 @@ export:
         parameters: ["vision", "zebra", *MaxCamerasPerTarget]
       - type: DistanceTraveled
       - molecule: "NoisePerceived"
-        aggregators: [sum, mean, variance]
+        aggregators: [mean, variance]
         value-filter: "onlyFinite"
       - molecule: "BodyCoverage"
-        aggregators: [sum, mean, variance]
+        aggregators: [mean, variance]
         value-filter: "onlyFinite"
       - molecule: "CentroidQuality"
-        aggregators: [sum, mean, variance]
+        aggregators: [mean, variance]
         value-filter: "onlyFinite"
 
 deployments:

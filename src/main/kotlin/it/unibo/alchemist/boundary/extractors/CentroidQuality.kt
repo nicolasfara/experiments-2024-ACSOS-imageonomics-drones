@@ -35,16 +35,12 @@ class CentroidQuality<T>(
     fun computeCentroidQuality(): Double {
         val nodes = environment.nodes
         val visibleCameras = nodes.filter { n -> n.isCamera() && n.getVisibleTargets().map { it.node }.contains(node) }
-        return if(node.isTarget()) {
-            metricCalculator.computeQualityMetric(
-                environment.getPosition(node).asCoordinate(),
-                visibleCameras.map { it.properties.filterIsInstance<CameraWithBlindSpot<Any>>().firstOrNull()
-                    ?.asCameraQualityInformation()
-                    ?: error("Property ${CameraWithBlindSpot::class} not found.") }
-            )
-        } else {
-            Double.NaN
-        }
+        return metricCalculator.computeQualityMetric(
+            environment.getPosition(node).asCoordinate(),
+            visibleCameras.map { it.properties.filterIsInstance<CameraWithBlindSpot<Any>>().firstOrNull()
+                ?.asCameraQualityInformation()
+                ?: error("Property ${CameraWithBlindSpot::class} not found.") }
+        )
     }
     private fun Node<*>.isTarget() = contains(targetMolecule) && getConcentration(targetMolecule).toBoolean()
 
