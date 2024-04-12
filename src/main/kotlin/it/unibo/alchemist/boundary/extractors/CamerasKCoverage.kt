@@ -42,14 +42,14 @@ class CamerasKCoverage(
     ): Map<String, Double> {
         val env = environment as Environment<*, *>
         val nodes: List<Node<*>> = env.nodes
-        val numTargets = nodes.count { it.isTarget() }
+        val numTargets = nodes.count { it.isTarget(targetMolecule) }
 
         val ris = if (numTargets <= 0) {
             resultWithNoTargets
         } else {
             nodes
-                .filter { it.isCamera() }
-                .flatMap { it.getVisibleTargets() } // all visible targets
+                .filter { it.isCamera(visionMolecule) }
+                .flatMap { it.getVisibleTargets(visionMolecule, targetMolecule) } // all visible targets
                 .groupingBy { it.node.id } // group by camera
                 .eachCount() // count #cameras for each target
                 .values
@@ -77,22 +77,4 @@ class CamerasKCoverage(
         val factor = 10.0.pow(4)
         return round(num * factor) / factor
     }
-
-    private fun Node<*>.isTarget() = contains(targetMolecule) && getConcentration(targetMolecule).toBoolean()
-
-    private fun Node<*>.isCamera() = contains(visionMolecule)
-
-    private fun Node<*>.getVisibleTargets() =
-        with(getConcentration(visionMolecule)) {
-            require(this is List<*>) { "Expected a List but got $this of type ${this?.javaClass}" }
-            if (!isEmpty()) {
-                get(0)?.also {
-                    require(it is VisibleNode<*, *>) {
-                        "Expected a List<VisibleNode> but got List<${it::class}> = $this"
-                    }
-                }
-            }
-            @Suppress("UNCHECKED_CAST")
-            (this as Iterable<VisibleNode<*, *>>).filter { it.node.isTarget() }
-        }
 }

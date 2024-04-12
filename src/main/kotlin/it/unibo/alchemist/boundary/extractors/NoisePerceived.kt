@@ -19,15 +19,11 @@ class NoisePerceived<T>(
         val noisePerceivedMolecule = SimpleMolecule("NoisePerceived")
     }
 
-    private val targetMolecule = SimpleMolecule("zebra")
     private val droneMolecule = SimpleMolecule("drone")
     private val soundMetricCalculator = SoundMetricCalculator()
 
-
     fun computeSoundMetric(): Double {
-        val drones = environment.nodes
-            .filter { it.contains(droneMolecule) }
-
+        val drones = environment.nodes.filter { it.contains(droneMolecule) }
 
         val pressures = drones.map { drone ->
             val distanceHypoten = environment.distanceCameraToZebra(node, drone, droneHeight)
@@ -42,33 +38,6 @@ class NoisePerceived<T>(
             hearingThreshold,
         )
     }
-
-//    override fun <T> extractData(
-//        environment: Environment<T, *>,
-//        reaction: Actionable<T>?,
-//        time: Time,
-//        step: Long
-//    ): Map<String, Double> {
-//        val drones = environment.nodes
-//            .filter { it.contains(droneMolecule) }
-//        val averageNoiseForZebras = environment.nodes
-//            .filter { it.isTarget() }
-//            .map { zebra ->
-//                val pressures = drones.map { drone ->
-//                    val distanceHypoten = environment.distanceCameraToZebra(zebra, drone, droneHeight)
-//                    soundMetricCalculator.dispersionOfSoundDecibel(
-//                        decibelEmitted,
-//                        distanceMeasurementFromSource,
-//                        distanceHypoten,
-//                    )
-//                }.map {
-//                    soundMetricCalculator.perceivedSoundLevelForZebras(it, hearingThreshold)
-//                }
-//                soundMetricCalculator.sumOfSoundPressures(pressures)
-//            }
-//            .average()
-//        return mapOf(noisePerceivedColumnName to averageNoiseForZebras)
-//    }
 
     private fun <T> Environment<T, *>.distanceCameraToZebra(camera: Node<T>, zebra: Node<T>, height: Double): Double {
         val onGroundDistance = getDistanceBetweenNodes(camera, zebra)

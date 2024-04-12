@@ -31,30 +31,12 @@ class BodyCoverage<T>(
             "Expected a Physics2DEnvironment but got ${environment::class}"
         }
         val nodes = environment.nodes
-        val visibleCameras = nodes.filter { n -> n.isCamera() && n.getVisibleTargets().map { it.node }.contains(node) }
+        val visibleCameras = node.getVisibleCameras(nodes, visionMolecule, targetMolecule)
         return metricCalculator.computeMetricForNode(
             environment.getPosition(node) to environment.getHeading(node),
             visibleCameras.map { environment.getPosition(it) }
         )
     }
-
-    private fun Node<*>.isTarget() = contains(targetMolecule) && getConcentration(targetMolecule).toBoolean()
-
-    private fun Node<*>.isCamera() = contains(visionMolecule)
-
-    private fun Node<T>.getVisibleTargets() =
-        with(getConcentration(visionMolecule)) {
-            require(this is List<*>) { "Expected a List but got $this" }
-            if (isNotEmpty()) {
-                get(0)?.also {
-                    require(it is VisibleNode<*, *>) {
-                        "Expected a List<VisibleNode> but got List<${it::class}> = $this"
-                    }
-                }
-            }
-            @Suppress("UNCHECKED_CAST")
-            (this as Iterable<VisibleNode<T, *>>).filter { it.node.isTarget() }
-        }
 
     override fun cloneOnNewNode(node: Node<T>): NodeProperty<T> = TODO("Not yet implemented")
 }
