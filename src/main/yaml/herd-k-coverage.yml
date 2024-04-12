@@ -111,7 +111,7 @@ variables:
     min: 1
     max: 150
     step: 1
-    default: 0
+    default: 1
 
 seeds:
   scenario: *Seed
