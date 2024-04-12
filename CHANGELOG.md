@@ -1,3 +1,31 @@
+## [1.5.0](https://github.com/nicolasfara/experiments-imageonomics-drones/compare/1.4.0...1.5.0) (2024-04-12)
+
+
+### Features
+
+* prepare for long simulations ([9a8d483](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/9a8d4830cfabe1f31f6747022854841a162b3f95))
+
+
+### Dependency updates
+
+* **deps:** update python docker tag to v3.12.3 ([51305c3](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/51305c3f3ca3827d468ba1cfc48a244031a2d742))
+
+
+### Bug Fixes
+
+* make the value as a double ([d1ecd5a](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/d1ecd5a18afcd3426c6f0d652dfa0248a802fcfb))
+* use default value for random seed within the valid range ([22fd2ae](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/22fd2ae9f3f6f3f67e58d374c8d98c24a2ed71b3))
+
+
+### Build and continuous integration
+
+* **renovate:** assign updates to [@nicolasfara](https://github.com/nicolasfara) ([26537cf](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/26537cfdd55706a301edfbafc08eb6327f027f86))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.4.0 [skip ci] ([2174130](https://github.com/nicolasfara/experiments-imageonomics-drones/commit/2174130837edce65068539a8383daec5d949330a))
+
 ## [1.4.0](https://github.com/nicolasfara/experiments-imageonomics-drones/compare/1.3.0...1.4.0) (2024-04-10)
 
 
