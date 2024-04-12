@@ -96,7 +96,7 @@ variables:
 ##### Other
   CamHerdRatio:
     type: ArbitraryVariable
-    parameters: [2, 0.5, 1.0, 2.0, 3.0]
+    parameters: [2.0, 0.5, 1.0, 2.0, 3.0]
   NumberOfHerds: &HerdNumber
     type: ArbitraryVariable
     parameters: [8, 2, 4, 8]
