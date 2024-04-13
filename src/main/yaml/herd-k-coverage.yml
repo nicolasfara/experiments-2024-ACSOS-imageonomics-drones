@@ -91,7 +91,7 @@ variables:
       import kotlin.math.*
       soundPowerLevel - abs(10.0 * log10(1.0 / (4 * PI * distanceFromSourceMeasure.pow(2))))
   zebraEllipseBodySegments: &zebraEllipseBodySegments
-    formula: 8.0
+    formula: 6.0
 
 ##### Other
   CamHerdRatio:
