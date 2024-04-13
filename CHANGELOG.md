@@ -1,3 +1,25 @@
+## [1.5.1](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.5.0...1.5.1) (2024-04-13)
+
+
+### Bug Fixes
+
+* set as an ellipse the zebra body ([44f8eb4](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/44f8eb44b77874138a94a7041c64e23987b7128b))
+
+
+### Build and continuous integration
+
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.15 ([edbe8aa](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/edbe8aa5b75d2003c08d0066db7e75dc2657b6ce))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.5.0 [skip ci] ([f949834](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/f9498344b4a5861207fff8e8e4b25b8816989094))
+
+
+### Refactoring
+
+* create Utils ([9df4248](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/9df424803deddd7be23e09800d5ddb3e9ebdbf03))
+
 ## [1.5.0](https://github.com/nicolasfara/experiments-imageonomics-drones/compare/1.4.0...1.5.0) (2024-04-12)
 
 
