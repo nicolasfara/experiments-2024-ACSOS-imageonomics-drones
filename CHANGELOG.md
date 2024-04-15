@@ -1,3 +1,17 @@
+## [1.6.0](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.5.1...1.6.0) (2024-04-15)
+
+
+### Features
+
+* import kandy plotting library ([ddc2e2d](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/ddc2e2d8dc9580e2fd9ccdf868507ca901261be1))
+* put normalisation functions into utils and compute normalization for NoisePerceived Metric ([b074675](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/b0746755cd49214e3bcd7ef58bca20366dc41642))
+
+
+### General maintenance
+
+* add kotlin script using kandy to plot the decision diagram for SoundMetric ([914cbe3](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/914cbe3dccc12905dec3e39065d394cbb6520803))
+* **release:** update gradle.properties .env versions to 1.5.1 [skip ci] ([793590c](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/793590c94e64596cb50a92d71d6a0b6162b35926))
+
 ## [1.5.1](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.5.0...1.5.1) (2024-04-13)
 
 
