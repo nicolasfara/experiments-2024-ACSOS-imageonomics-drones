@@ -33,10 +33,11 @@ class NoisePerceived<T>(
                 distanceHypoten,
             )
         }
-        return soundMetricCalculator.perceivedSoundLevelForZebras(
+        val perceivedDb = soundMetricCalculator.perceivedSoundLevelForZebras(
             soundMetricCalculator.sumOfSoundPressures(pressures),
             hearingThreshold,
         )
+        return normalizationFunctionForRange(perceivedDb, hearingThreshold, decibelEmitted)
     }
 
     private fun <T> Environment<T, *>.distanceCameraToZebra(camera: Node<T>, zebra: Node<T>, height: Double): Double {

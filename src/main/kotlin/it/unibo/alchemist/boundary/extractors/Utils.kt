@@ -4,6 +4,8 @@ import it.unibo.alchemist.model.Molecule
 import it.unibo.alchemist.model.Node
 import it.unibo.alchemist.model.VisibleNode
 import it.unibo.experiment.toBoolean
+import kotlin.math.PI
+import kotlin.math.pow
 
 
 fun Node<*>.isTarget(targetMolecule: Molecule) =
@@ -30,3 +32,25 @@ fun <T> Node<T>.getVisibleCameras(nodes: List<Node<T>>, visionMolecule: Molecule
         n.isCamera(visionMolecule) &&
         n.getVisibleTargets(visionMolecule, targetMolecule).map { it.node }.contains(this)
     }
+
+fun normalizationFunctionForAngle(angle: Double): Double {
+    val normalizedValue = angle * 2 / PI
+    return sigmoid(normalizedValue, 0.35, 5.0)
+}
+
+fun normalizationFunctionForRange(value: Double, min: Double, max: Double): Double {
+    return sigmoid(
+        linearizationFunction(value, min, max),
+        0.40,
+        4.0,
+    )
+}
+
+fun linearizationFunction(value: Double, min: Double, max: Double) = when {
+    value >= max -> 1.0 // If  value is greater than MAX then fix it to 1.0
+    else -> (value - min) / (max - min) // Change range into [0..1]
+}
+
+fun sigmoid(value: Double, m: Double, v: Double): Double {
+    return (1 + ((value * (1 - m)) / (m * (1 - value))).pow(-v)).pow(-1)
+}

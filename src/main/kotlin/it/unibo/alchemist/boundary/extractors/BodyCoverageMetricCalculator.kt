@@ -36,17 +36,12 @@ class BodyCoverageMetricCalculator(
             .mapValues { (_, angles) -> angles.max() }
 
         require(segmentsAndAngles.size <= segments) { "At most $segments sides can be detected" }
-        return segmentsAndAngles.map { (side, angle) -> side.length * normalizationFunction(angle) }.sum() / body.length
+        return segmentsAndAngles.map {
+            (side, angle) -> side.length * normalizationFunctionForAngle(angle)
+        }.sum() / body.length
     }
 
-    private fun normalizationFunction(angle: Double): Double {
-        val normalizedValue = angle * 2 / PI
-        return sigmoid(normalizedValue, 0.35, 5.0)
-    }
 
-    private fun sigmoid(value: Double, m: Double, v: Double): Double {
-        return (1 + ((value * (1 - m)) / (m * (1 - value))).pow(-v)).pow(-1)
-    }
 
     private fun visibleSidesFromCamera(body: Geometry, cameraPosition: Coordinate): List<Pair<LineString, Double>> {
         val convexHull = body.convexHull()
