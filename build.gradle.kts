@@ -49,6 +49,7 @@ dependencies {
 //    if (!GraphicsEnvironment.isHeadless()) {
         implementation("it.unibo.alchemist:alchemist-swingui:${libs.versions.alchemist.get()}")
 //    }
+    implementation(libs.kandy)
 }
 
 // Heap size estimation for batches

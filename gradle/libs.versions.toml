@@ -16,6 +16,7 @@ apache-geometry-euclidean = { module = "org.apache.commons:commons-geometry-eucl
 jst = { module = "org.locationtech.jts:jts-core", version = "1.19.0" }
 smile-core = {module = "com.github.haifengl:smile-core", version.ref = "smile"}
 smile-kotlin = {module = "com.github.haifengl:smile-kotlin", version.ref = "smile"}
+kandy = {module = "org.jetbrains.kotlinx:kandy-lets-plot", version = "0.6.0"}
 
 [bundles]
 alchemist-protelis = [
