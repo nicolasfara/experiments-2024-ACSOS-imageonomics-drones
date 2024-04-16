@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.locationtech.jts.geom.Coordinate
 import kotlin.test.Test
 
-class CentroidQualityMetricCalculatorTest {
+class FoVDistanceMetricCalculatorTest {
     companion object {
         val center = Coordinate(0.0, 0.0)
         val anotherCenter = Coordinate(-1.0, -1.0)

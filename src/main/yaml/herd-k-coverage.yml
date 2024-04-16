@@ -194,7 +194,7 @@ export:
       - molecule: "BodyCoverage"
         aggregators: [mean, variance]
         value-filter: "onlyFinite"
-      - molecule: "CentroidQuality"
+      - molecule: "FoVDistance"
         aggregators: [mean, variance]
         value-filter: "onlyFinite"
 
@@ -211,7 +211,7 @@ deployments:
         parameters: [ *soundPressureLevel, *distanceFromSourceMeasure, *droneHeight, *hearingThreshold ]
       - type: BodyCoverage
         parameters: [ "vision", "zebra", *bodyLen, *bodyWidth, *zebraEllipseBodySegments ]
-      - type: CentroidQuality
+      - type: FoVDistance
         parameters: [ "vision", "zebra" ]
   - type: Circle
     parameters: [ *NumCameras, 0, 0, 200]

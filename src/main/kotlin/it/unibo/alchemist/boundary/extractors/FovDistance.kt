@@ -2,19 +2,16 @@ package it.unibo.alchemist.boundary.extractors
 
 import it.unibo.alchemist.model.Node
 import it.unibo.alchemist.model.NodeProperty
-import it.unibo.alchemist.model.VisibleNode
 import it.unibo.alchemist.model.molecules.SimpleMolecule
 import it.unibo.alchemist.model.physics.environments.Physics2DEnvironment
 import it.unibo.alchemist.model.positions.Euclidean2DPosition
-import it.unibo.experiment.toBoolean
 import org.locationtech.jts.algorithm.Centroid
 import org.locationtech.jts.awt.ShapeReader
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.Geometry
 import org.locationtech.jts.geom.GeometryFactory
-import org.locationtech.jts.math.Vector2D
 
-class CentroidQuality<T>(
+class FovDistance<T>(
     private val environment: Physics2DEnvironment<T>,
     override val node: Node<T>,
     visionMoleculeName: String,
@@ -26,11 +23,11 @@ class CentroidQuality<T>(
     private val metricCalculator = CentroidQualityMetricCalculator()
 
     companion object {
-        val bodyCoverageMolecule = SimpleMolecule("CentroidQuality")
+        val fovDistanceMolecule = SimpleMolecule("FovDistance")
         private val flatness = 1.0
     }
 
-    override fun cloneOnNewNode(node: Node<T>): NodeProperty<T> = CentroidQuality(environment, node, visionMolecule.name, targetMolecule.name)
+    override fun cloneOnNewNode(node: Node<T>): NodeProperty<T> = FovDistance(environment, node, visionMolecule.name, targetMolecule.name)
 
     fun computeCentroidQuality(): Double {
         val nodes = environment.nodes

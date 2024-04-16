@@ -1,11 +1,6 @@
 package it.unibo.alchemist.boundary.extractors
 
-import it.unibo.alchemist.model.positions.Euclidean2DPosition
-import org.locationtech.jts.algorithm.Centroid
-import org.locationtech.jts.awt.ShapeReader
 import org.locationtech.jts.geom.Coordinate
-import org.locationtech.jts.geom.Geometry
-import org.locationtech.jts.geom.GeometryFactory
 import org.locationtech.jts.math.Vector2D
 
 typealias CameraQualityInformation = Pair<Coordinate, Coordinate>
