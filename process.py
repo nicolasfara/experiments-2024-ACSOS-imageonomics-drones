@@ -1,12 +1,18 @@
 import numpy as np
 import xarray as xr
 import re
+import os
 from pathlib import Path
+import seaborn as sns
 import collections
+
 
 def distance(val, ref):
     return abs(ref - val)
+
+
 vectDistance = np.vectorize(distance)
+
 
 def cmap_xmap(function, cmap):
     """ Applies function, on the indices of colormap cmap. Beware, function
@@ -15,12 +21,13 @@ def cmap_xmap(function, cmap):
     See also cmap_xmap.
     """
     cdict = cmap._segmentdata
-    function_to_map = lambda x : (function(x[0]), x[1], x[2])
-    for key in ('red','green','blue'):
+    function_to_map = lambda x: (function(x[0]), x[1], x[2])
+    for key in ('red', 'green', 'blue'):
         cdict[key] = map(function_to_map, cdict[key])
-#        cdict[key].sort()
-#        assert (cdict[key][0]<0 or cdict[key][-1]>1), "Resulting indices extend out of the [0, 1] segment."
-    return matplotlib.colors.LinearSegmentedColormap('colormap',cdict,1024)
+    #        cdict[key].sort()
+    #        assert (cdict[key][0]<0 or cdict[key][-1]>1), "Resulting indices extend out of the [0, 1] segment."
+    return matplotlib.colors.LinearSegmentedColormap('colormap', cdict, 1024)
+
 
 def getClosest(sortedMatrix, column, val):
     while len(sortedMatrix) > 3:
@@ -38,11 +45,14 @@ def getClosest(sortedMatrix, column, val):
         safecopy[column] = val
         return safecopy
 
+
 def convert(column, samples, matrix):
     return np.matrix([getClosest(matrix, column, t) for t in samples])
 
+
 def valueOrEmptySet(k, d):
     return (d[k] if isinstance(d[k], set) else {d[k]}) if k in d else set()
+
 
 def mergeDicts(d1, d2):
     """
@@ -68,6 +78,7 @@ def mergeDicts(d1, d2):
         res[k] = valueOrEmptySet(k, d1) | valueOrEmptySet(k, d2)
     return res
 
+
 def extractCoordinates(filename):
     """
     Scans the header of an Alchemist file in search of the variables.
@@ -87,7 +98,7 @@ def extractCoordinates(filename):
 
     """
     with open(filename, 'r') as file:
-#        regex = re.compile(' (?P<varName>[a-zA-Z._-]+) = (?P<varValue>[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),?')
+        #        regex = re.compile(' (?P<varName>[a-zA-Z._-]+) = (?P<varValue>[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?),?')
         regex = r"(?P<varName>[a-zA-Z._-]+) = (?P<varValue>[^,]*),?"
         dataBegin = r"\d"
         is_float = r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?"
@@ -95,13 +106,14 @@ def extractCoordinates(filename):
             match = re.findall(regex, line.replace('Infinity', '1e30000'))
             if match:
                 return {
-                    var : float(value) if re.match(is_float, value)
-                        else bool(re.match(r".*?true.*?", value.lower())) if re.match(r".*?(true|false).*?", value.lower())
-                        else value
+                    var: float(value) if re.match(is_float, value)
+                    else bool(re.match(r".*?true.*?", value.lower())) if re.match(r".*?(true|false).*?", value.lower())
+                    else value
                     for var, value in match
                 }
             elif re.match(dataBegin, line[0]):
                 return {}
+
 
 def extractVariableNames(filename):
     """
@@ -131,6 +143,7 @@ def extractVariableNames(filename):
             return regex.findall(lastHeaderLine)
         return []
 
+
 def openCsv(path):
     """
     Converts an Alchemist export file into a list of lists representing the matrix of values.
@@ -150,6 +163,7 @@ def openCsv(path):
     with open(path, 'r') as file:
         lines = filter(lambda x: regex.match(x[0]), file.readlines())
         return [[float(x) for x in line.split()] for line in lines]
+
 
 def beautifyValue(v):
     """
@@ -175,10 +189,11 @@ def beautifyValue(v):
     except:
         return v
 
+
 if __name__ == '__main__':
     # CONFIGURE SCRIPT
     # Where to find Alchemist data files
-    directory = 'build/export'
+    directory = 'build/export/alchemist-simulation'
     # Where to save charts
     output_directory = 'charts'
     # How to name the summary of the processed data
@@ -189,45 +204,64 @@ if __name__ == '__main__':
     # Number of time samples 
     timeSamples = 100
     # time management
-    minTime = 0
-    maxTime = 1800
+    minTime = 300
+    maxTime = 1800 - minTime
     timeColumnName = 'time'
     logarithmicTime = False
     # One or more variables are considered random and "flattened"
     seedVars = ['Seed']
+
+
     # Label mapping
     class Measure:
-        def __init__(self, description, unit = None):
+        def __init__(self, description, unit=None):
             self.__description = description
             self.__unit = unit
+
         def description(self):
             return self.__description
+
         def unit(self):
             return '' if self.__unit is None else f'({self.__unit})'
-        def derivative(self, new_description = None, new_unit = None):
+
+        def derivative(self, new_description=None, new_unit=None):
             def cleanMathMode(s):
                 return s[1:-1] if s[0] == '$' and s[-1] == '$' else s
+
             def deriveString(s):
                 return r'$d ' + cleanMathMode(s) + r'/{dt}$'
+
             def deriveUnit(s):
                 return f'${cleanMathMode(s)}' + '/{s}$' if s else None
+
             result = Measure(
                 new_description if new_description else deriveString(self.__description),
                 new_unit if new_unit else deriveUnit(self.__unit),
             )
             return result
+
         def __str__(self):
             return f'{self.description()} {self.unit()}'
-    
+
+
     centrality_label = 'H_a(x)'
+
+
     def expected(x):
         return r'\mathbf{E}[' + x + ']'
+
+
     def stdev_of(x):
         return r'\sigma{}[' + x + ']'
+
+
     def mse(x):
         return 'MSE[' + x + ']'
+
+
     def cardinality(x):
         return r'\|' + x + r'\|'
+
 
     labels = {
         'nodeCount': Measure(r'$n$', 'nodes'),
@@ -242,20 +276,28 @@ if __name__ == '__main__':
         'org:protelis:tutorial:distanceTo[mean]': Measure(r'$m$', 'mean distance'),
         'org:protelis:tutorial:distanceTo[min]': Measure(r'$m$', ',min distance'),
     }
+
+
     def derivativeOrMeasure(variable_name):
         if variable_name.endswith('dt'):
             return labels.get(variable_name[:-2], Measure(variable_name)).derivative()
         return Measure(variable_name)
+
+
     def label_for(variable_name):
         return labels.get(variable_name, derivativeOrMeasure(variable_name)).description()
+
+
     def unit_for(variable_name):
         return str(labels.get(variable_name, derivativeOrMeasure(variable_name)))
-    
+
+
     # Setup libraries
     np.set_printoptions(formatter={'float': floatPrecision.format})
     # Read the last time the data was processed, reprocess only if new data exists, otherwise just load
     import pickle
     import os
+
     if os.path.exists(directory):
         newestFileTime = max([os.path.getmtime(directory + '/' + file) for file in os.listdir(directory)], default=0.0)
         try:
@@ -276,6 +318,7 @@ if __name__ == '__main__':
             for experiment in experiments:
                 # Collect all files for the experiment of interest
                 import fnmatch
+
                 allfiles = filter(lambda file: fnmatch.fnmatch(file, experiment + '_*.csv'), os.listdir(directory))
                 allfiles = [directory + '/' + name for name in allfiles]
                 allfiles.sort()
@@ -305,7 +348,7 @@ if __name__ == '__main__':
                             dataset[v] = (dimensions.keys(), novals)
                     # Compute maximum and minimum time, create the resample
                     timeColumn = varNames.index(timeColumnName)
-                    allData = { file: np.matrix(openCsv(file)) for file in allfiles }
+                    allData = {file: np.matrix(openCsv(file)) for file in allfiles}
                     computeMin = minTime is None
                     computeMax = maxTime is None
                     if computeMax:
@@ -319,7 +362,7 @@ if __name__ == '__main__':
                     timeline = timefun(minTime, maxTime, timeSamples)
                     # Resample
                     for file in allData:
-    #                    print(file)
+                        #                    print(file)
                         allData[file] = convert(timeColumn, timeline, allData[file])
                     # Populate the dataset
                     for file, data in allData.items():
@@ -331,82 +374,88 @@ if __name__ == '__main__':
                                 darray.loc[experimentVars] = data[:, idx].A1
                     # Fold the dataset along the seed variables, producing the mean and stdev datasets
                     mergingVariables = [seed for seed in seedVars if seed in dataset.coords]
-                    means[experiment] = dataset.mean(dim = mergingVariables, skipna=True)
-                    stdevs[experiment] = dataset.std(dim = mergingVariables, skipna=True)
+                    means[experiment] = dataset.mean(dim=mergingVariables, skipna=True)
+                    stdevs[experiment] = dataset.std(dim=mergingVariables, skipna=True)
             # Save the datasets
             pickle.dump(means, open(pickleOutput + '_mean', 'wb'), protocol=-1)
             pickle.dump(stdevs, open(pickleOutput + '_std', 'wb'), protocol=-1)
             pickle.dump(newestFileTime, open('timeprocessed', 'wb'))
     else:
-        means = { experiment: xr.Dataset() for experiment in experiments }
-        stdevs = { experiment: xr.Dataset() for experiment in experiments }
+        means = {experiment: xr.Dataset() for experiment in experiments}
+        stdevs = {experiment: xr.Dataset() for experiment in experiments}
 
     # QUICK CHARTING
 
     import matplotlib
     import matplotlib.pyplot as plt
     import matplotlib.cm as cmx
+
     matplotlib.rcParams.update({'axes.titlesize': 12})
     matplotlib.rcParams.update({'axes.labelsize': 10})
-    
+
+
     def make_line_chart(
-        xdata,
-        ydata,
-        title=None,
-        ylabel=None,
-        xlabel=None,
-        colors=None,
-        linewidth=1,
-        error_alpha=0.2,
-        figure_size=(6, 4)
+            xdata,
+            ydata,
+            title=None,
+            ylabel=None,
+            xlabel=None,
+            colors=None,
+            linewidth=1,
+            error_alpha=0.2,
+            figure_size=(6, 4)
     ):
-        fig = plt.figure(figsize = figure_size)
+        fig = plt.figure(figsize=figure_size)
         ax = fig.add_subplot(1, 1, 1)
         ax.set_title(title)
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
-#        ax.set_ylim(0)
-#        ax.set_xlim(min(xdata), max(xdata))
+        #        ax.set_ylim(0)
+        #        ax.set_xlim(min(xdata), max(xdata))
         index = 0
         for (label, (data, error)) in ydata.items():
-#            print(f'plotting {data}\nagainst {xdata}')
-            lines = ax.plot(xdata, data, label=label, color=colors(index / (len(ydata) - 1)) if colors else None, linewidth=linewidth)
+            #            print(f'plotting {data}\nagainst {xdata}')
+            lines = ax.plot(xdata, data, label=label, color=colors(index / (len(ydata) - 1)) if colors else None,
+                            linewidth=linewidth)
             index += 1
             if error is not None:
                 last_color = lines[-1].get_color()
                 ax.fill_between(
                     xdata,
-                    data+error,
-                    data-error,
+                    data + error,
+                    data - error,
                     facecolor=last_color,
                     alpha=error_alpha,
                 )
         return (fig, ax)
-    def generate_all_charts(means, errors = None, basedir=''):
-        viable_coords = { coord for coord in means.coords if means[coord].size > 1 }
+
+
+    def generate_all_charts(means, errors=None, basedir=''):
+        viable_coords = {coord for coord in means.coords if means[coord].size > 1}
         for comparison_variable in viable_coords - {timeColumnName}:
             mergeable_variables = viable_coords - {timeColumnName, comparison_variable}
             for current_coordinate in mergeable_variables:
-                merge_variables = mergeable_variables - { current_coordinate }
-                merge_data_view = means.mean(dim = merge_variables, skipna = True)
-                merge_error_view = errors.mean(dim = merge_variables, skipna = True)
+                merge_variables = mergeable_variables - {current_coordinate}
+                merge_data_view = means.mean(dim=merge_variables, skipna=True)
+                merge_error_view = errors.mean(dim=merge_variables, skipna=True)
                 for current_coordinate_value in merge_data_view[current_coordinate].values:
                     beautified_value = beautifyValue(current_coordinate_value)
                     for current_metric in merge_data_view.data_vars:
                         title = f'{label_for(current_metric)} for diverse {label_for(comparison_variable)} when {label_for(current_coordinate)}={beautified_value}'
                         for withErrors in [True, False]:
                             fig, ax = make_line_chart(
-                                title = title,
-                                xdata = merge_data_view[timeColumnName],
-                                xlabel = unit_for(timeColumnName),
-                                ylabel = unit_for(current_metric),
-                                ydata = {
+                                title=title,
+                                xdata=merge_data_view[timeColumnName],
+                                xlabel=unit_for(timeColumnName),
+                                ylabel=unit_for(current_metric),
+                                ydata={
                                     beautifyValue(label): (
                                         merge_data_view.sel(selector)[current_metric],
                                         merge_error_view.sel(selector)[current_metric] if withErrors else 0
                                     )
                                     for label in merge_data_view[comparison_variable].values
-                                    for selector in [{comparison_variable: label, current_coordinate: current_coordinate_value}]
+                                    for selector in
+                                    [{comparison_variable: label, current_coordinate: current_coordinate_value}]
                                 },
                             )
                             ax.set_xlim(minTime, maxTime)
@@ -419,9 +468,45 @@ if __name__ == '__main__':
                                 figname = figname.replace(symbol, '_')
                             fig.savefig(f'{by_time_output_directory}/{figname}.pdf')
                             plt.close(fig)
+
+
     for experiment in experiments:
         current_experiment_means = means[experiment]
         current_experiment_errors = stdevs[experiment]
-        generate_all_charts(current_experiment_means, current_experiment_errors, basedir = f'{experiment}/all')
-        
-# Custom charting
+        # generate_all_charts(current_experiment_means, current_experiment_errors, basedir = f'{experiment}/all')
+
+    # Custom charting
+    dataset_means = means["experiment_export"]
+    dataset_stdevs = stdevs["experiment_export"]
+
+    # Filter out the ff_linpro_ac algorithm
+    dataset_means = dataset_means.where(dataset_means["Algorithm"] != "ff_linpro_ac", drop=True)
+    dataset_stdevs = dataset_stdevs.where(dataset_stdevs["Algorithm"] != "ff_linpro_ac", drop=True)
+
+    # Create the output directory for custom charts
+    os.makedirs(f'{output_directory}/experiment_export/custom', exist_ok=True)
+
+    def plot_metric_by_algorithm(dataset, cam_herd_ratio, number_of_herds):
+        fig, ax = plt.subplots(1, 3, figsize=(16, 4), sharey=False, layout="constrained")
+        fig.suptitle(f"Metrics by Algorithms with CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
+
+        for a, metric in zip(ax, dataset.columns):
+            sns.boxplot(dataset, ax=a, x="Algorithm", y=metric, palette="viridis", hue="Algorithm")
+            a.set_title(metric)
+            a.xaxis.grid(True)
+            a.yaxis.grid(True)
+            a.set(ylabel=None)
+            a.xaxis.get_label().set_fontsize(16)
+
+        fig.savefig(f'{output_directory}/experiment_export/custom/metrics_by_algorithms_CamHerRatio={cam_herd_ratio}_NumOfHerds={number_of_herds}.pdf')
+
+    # Plot metrics by algorithms
+    for cam_ratio in dataset_means["CamHerdRatio"].to_numpy():
+        for num_herds in dataset_means["NumberOfHerds"].to_numpy():
+            metrics_by_algorithms = dataset_means.sel(
+                {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
+            )[["BodyCoverage[mean]", "NoisePerceived[mean]", "CentroidQuality[mean]"]].to_dataframe()
+            metrics_by_algorithms.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
+
+            plot_metric_by_algorithm(metrics_by_algorithms, cam_ratio, num_herds)
+
