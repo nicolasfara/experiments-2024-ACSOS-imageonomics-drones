@@ -4,5 +4,6 @@
 .spyproject/
 build/
 charts/
+env/
 data_summary_*
 timeprocessed
