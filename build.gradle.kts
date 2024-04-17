@@ -38,17 +38,22 @@ multiJvm {
     jvmVersionForCompilation.set(usesJvm)
 }
 
+develocity {
+    buildScan {
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
+        publishing.onlyIf { it.buildResult.failures.isNotEmpty() }
+    }
+}
+
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(libs.bundles.alchemist.protelis)
-//    implementation(libs.bundles.apache.geometry)
     implementation(libs.jst)
     implementation(libs.bundles.smile)
     implementation(fileTree("libs"))
     testImplementation(kotlin("test"))
-//    if (!GraphicsEnvironment.isHeadless()) {
-        implementation("it.unibo.alchemist:alchemist-swingui:${libs.versions.alchemist.get()}")
-//    }
+    implementation("it.unibo.alchemist:alchemist-swingui:${libs.versions.alchemist.get()}")
     implementation(libs.kandy)
 }
 
