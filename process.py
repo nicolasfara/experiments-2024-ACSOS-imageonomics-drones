@@ -193,7 +193,7 @@ def beautifyValue(v):
 if __name__ == '__main__':
     # CONFIGURE SCRIPT
     # Where to find Alchemist data files
-    directory = 'build/export/alchemist-simulation'
+    directory = 'build/export'
     # Where to save charts
     output_directory = 'charts'
     # How to name the summary of the processed data
@@ -475,38 +475,41 @@ if __name__ == '__main__':
         current_experiment_errors = stdevs[experiment]
         # generate_all_charts(current_experiment_means, current_experiment_errors, basedir = f'{experiment}/all')
 
+    current_experiment = "experiment_export"
+
     # Custom charting
-    dataset_means = means["experiment_export"]
-    dataset_stdevs = stdevs["experiment_export"]
+    dataset_means = means[current_experiment]
+    dataset_stdevs = stdevs[current_experiment]
 
-    # Filter out the ff_linpro_ac algorithm
-    dataset_means = dataset_means.where(dataset_means["Algorithm"] != "ff_linpro_ac", drop=True)
-    dataset_stdevs = dataset_stdevs.where(dataset_stdevs["Algorithm"] != "ff_linpro_ac", drop=True)
-
-    # Create the output directory for custom charts
-    os.makedirs(f'{output_directory}/experiment_export/custom', exist_ok=True)
-
-    def plot_metric_by_algorithm(dataset, cam_herd_ratio, number_of_herds):
-        fig, ax = plt.subplots(1, 3, figsize=(16, 4), sharey=False, layout="constrained")
-        fig.suptitle(f"Metrics by Algorithms with CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
-
-        for a, metric in zip(ax, dataset.columns):
-            sns.boxplot(dataset, ax=a, x="Algorithm", y=metric, palette="viridis", hue="Algorithm")
-            a.set_title(metric)
-            a.xaxis.grid(True)
-            a.yaxis.grid(True)
-            a.set(ylabel=None)
-            a.xaxis.get_label().set_fontsize(16)
-
-        fig.savefig(f'{output_directory}/experiment_export/custom/metrics_by_algorithms_CamHerRatio={cam_herd_ratio}_NumOfHerds={number_of_herds}.pdf')
-
-    # Plot metrics by algorithms
-    for cam_ratio in dataset_means["CamHerdRatio"].to_numpy():
-        for num_herds in dataset_means["NumberOfHerds"].to_numpy():
-            metrics_by_algorithms = dataset_means.sel(
-                {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
-            )[["BodyCoverage[mean]", "NoisePerceived[mean]", "CentroidQuality[mean]"]].to_dataframe()
-            metrics_by_algorithms.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
-
-            plot_metric_by_algorithm(metrics_by_algorithms, cam_ratio, num_herds)
-
+    # # Filter out the ff_linpro_ac algorithm
+    # dataset_means = dataset_means.where(dataset_means["Algorithm"] != "ff_linpro_ac", drop=True)
+    # dataset_stdevs = dataset_stdevs.where(dataset_stdevs["Algorithm"] != "ff_linpro_ac", drop=True)
+    #
+    # # Create the output directory for custom charts
+    # os.makedirs(f'{output_directory}/{current_experiment}/custom', exist_ok=True)
+    #
+    #
+    # def plot_metric_by_algorithm(dataset, cam_herd_ratio, number_of_herds):
+    #     fig, ax = plt.subplots(1, 3, figsize=(16, 4), sharey=False, layout="constrained")
+    #     fig.suptitle(f"CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
+    #
+    #     for a, metric in zip(ax, dataset.columns):
+    #         sns.boxplot(dataset, ax=a, x="Algorithm", y=metric, palette="viridis", hue=4)
+    #         a.set_title(metric)
+    #         a.xaxis.grid(True)
+    #         a.yaxis.grid(True)
+    #         a.set(ylabel=None)
+    #         a.xaxis.get_label().set_fontsize(16)
+    #
+    #     fig.savefig(f'{output_directory}/{current_experiment}/custom/metrics_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
+    #
+    #
+    # # Plot metrics by algorithms
+    # for cam_ratio in dataset_means["CamHerdRatio"].to_numpy():
+    #     for num_herds in dataset_means["NumberOfHerds"].to_numpy():
+    #         metrics_by_algorithms = dataset_means.sel(
+    #             {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
+    #         )[["BodyCoverage[mean]", "NoisePerceived[mean]", "CentroidQuality[mean]"]].to_dataframe()
+    #         metrics_by_algorithms.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
+    #
+    #         plot_metric_by_algorithm(metrics_by_algorithms, cam_ratio, num_herds)
