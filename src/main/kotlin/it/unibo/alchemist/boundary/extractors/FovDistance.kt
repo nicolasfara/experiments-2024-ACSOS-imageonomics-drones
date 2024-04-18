@@ -29,7 +29,7 @@ class FovDistance<T>(
 
     override fun cloneOnNewNode(node: Node<T>): NodeProperty<T> = FovDistance(environment, node, visionMolecule.name, targetMolecule.name)
 
-    fun computeCentroidQuality(): Double {
+    fun computeFoVDistance(): Double {
         val nodes = environment.nodes
         val visibleCameras = node.getVisibleCameras(nodes, visionMolecule, targetMolecule)
         return metricCalculator.computeQualityMetric(

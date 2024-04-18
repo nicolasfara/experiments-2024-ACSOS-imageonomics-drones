@@ -68,8 +68,8 @@ variables:
   Algorithm: &Algorithm
     type: ListOf
     parameters:
-      - "sm_av"
       - "ff_linpro_c"
+      - "sm_av"
       - "bc_re_c"
       - "ff_linpro"
       - "ff_linpro_ac"
@@ -188,8 +188,10 @@ export:
       - type: CamerasKCoverage
         parameters: ["vision", "zebra", *MaxCamerasPerTarget]
       - type: DistanceTraveled
-      - molecule: "NoisePerceived"
+      - molecule: "NoisePerceivedNormalized"
         aggregators: [mean, variance]
+      - molecule: "NoisePerceived"
+        aggregators: [mean, variance, percentile90, max]
         value-filter: "onlyFinite"
       - molecule: "BodyCoverage"
         aggregators: [mean, variance]

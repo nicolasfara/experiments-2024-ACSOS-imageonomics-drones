@@ -17,12 +17,13 @@ class NoisePerceived<T>(
 
     companion object {
         val noisePerceivedMolecule = SimpleMolecule("NoisePerceived")
+        val noisePerceivedMoleculeNormalized = SimpleMolecule("NormalizedNoisePerceived")
     }
 
     private val droneMolecule = SimpleMolecule("drone")
     private val soundMetricCalculator = SoundMetricCalculator()
 
-    fun computeSoundMetric(): Double {
+    fun computeSoundMetric(): Pair<Double, Double> {
         val drones = environment.nodes.filter { it.contains(droneMolecule) }
 
         val pressures = drones.map { drone ->
@@ -37,7 +38,7 @@ class NoisePerceived<T>(
             soundMetricCalculator.sumOfSoundPressures(pressures),
             hearingThreshold,
         )
-        return normalizationFunctionForRange(perceivedDb, hearingThreshold, decibelEmitted)
+        return perceivedDb to normalizationFunctionForRange(perceivedDb, hearingThreshold, decibelEmitted)
     }
 
     private fun <T> Environment<T, *>.distanceCameraToZebra(camera: Node<T>, zebra: Node<T>, height: Double): Double {
