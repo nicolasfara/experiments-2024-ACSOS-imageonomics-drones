@@ -177,29 +177,6 @@ network-model:
   type: ConnectToGroup
   parameters: [*CommunicationRange, drone]
 
-export:
-  - type: CustomCSVExporter
-    parameters:
-      fileNameRoot: "experiment_export"
-      interval: 5.0
-      exportPath: "data"
-    data:
-      - time
-      - type: CamerasKCoverage
-        parameters: ["vision", "zebra", *MaxCamerasPerTarget]
-      - type: DistanceTraveled
-      - molecule: "NoisePerceivedNormalized"
-        aggregators: [mean, variance]
-      - molecule: "NoisePerceived"
-        aggregators: [mean, variance, percentile90, max]
-        value-filter: "onlyFinite"
-      - molecule: "BodyCoverage"
-        aggregators: [mean, variance]
-        value-filter: "onlyFinite"
-      - molecule: "FoVDistance"
-        aggregators: [mean, variance]
-        value-filter: "onlyFinite"
-
 deployments:
   - type: GroupsDeployment
     parameters: [*NumberOfAnimals, 0, 0, *EnvironmentRadius, *HerdNumber, 25]
@@ -247,6 +224,36 @@ deployments:
 #    contents:
 #      - molecule: landmark
 #        concentration: true
+
+export:
+  - type: CustomCSVExporter
+    parameters:
+      fileNameRoot: "experiment_export"
+      interval: 10.0
+      exportPath: "data"
+    data:
+      - type: Time
+        parameters:
+          precision: 1
+      - type: CamerasKCoverage
+        parameters: ["vision", "zebra", *MaxCamerasPerTarget]
+      - type: DistanceTraveled
+      - molecule: "NoisePerceivedNormalized"
+        aggregators: [mean, variance]
+        value-filter: "onlyFinite"
+        precision: 3
+      - molecule: "NoisePerceived"
+        aggregators: [mean, variance, percentile90, max]
+        value-filter: "onlyFinite"
+        precision: 3
+      - molecule: "BodyCoverage"
+        aggregators: [mean, variance]
+        value-filter: "onlyFinite"
+        precision: 3
+      - molecule: "FoVDistance"
+        aggregators: [mean, variance]
+        value-filter: "onlyFinite"
+        precision: 3
 
 terminate:
   - type: AfterTime
