@@ -182,7 +182,7 @@ export:
     parameters:
       fileNameRoot: "experiment_export"
       interval: 5.0
-      exportPath: "build/export"
+      exportPath: "data"
     data:
       - time
       - type: CamerasKCoverage
