@@ -1,3 +1,40 @@
+## [1.7.0](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.6.0...1.7.0) (2024-04-18)
+
+
+### Features
+
+* add custom charts showing metrics for each algorithm ([af83baa](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/af83baa172abb76c62823e5f05aef07ff867685e))
+
+
+### Dependency updates
+
+* **deps:** update alchemist to v33.0.8 ([d98aeee](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/d98aeeef0a07095518f103914efd45c6a2262167))
+
+
+### Bug Fixes
+
+* change export path for simulation data ([d4d48fb](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/d4d48fb4a726c6beca147e772aef062863be1e65))
+
+
+### Build and continuous integration
+
+* migrate to develocity plugin ([6de743d](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/6de743da1675db23ce5f8f24a59f397131f27b10))
+* move develocity configuration into settings.gradle.kts as before ([d7148b3](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/d7148b364fddb6155ccefff3ae33632de94aa535))
+
+
+### General maintenance
+
+* ignore python virtualenv ([c11e0b5](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/c11e0b5c0734148702ecd745b74a3f6ef851b21f))
+* **release:** update gradle.properties .env versions to 1.6.0 [skip ci] ([bd65e56](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/bd65e56cfa38102bae4f16cbdc5dbff205d11f64))
+* temporary disable custom charts generation ([568e880](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/568e8807a573ea9407fc9988c125a8945d52ba54))
+
+
+### Refactoring
+
+* change centroid quality with fov distance ([2c36703](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/2c367038968b22ef8ced9cdd07b5587759642173))
+* remove duplicate molecule write ([15e0c5c](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/15e0c5c79900f0b8bf4ced2b918f50c53067f017))
+* update fov distance name in the molecule ([f7e2e59](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/f7e2e5923ed9c225e93f90be6fd8b252fa5736f8))
+
 ## [1.6.0](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.5.1...1.6.0) (2024-04-15)
 
 
