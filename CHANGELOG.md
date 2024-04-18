@@ -1,3 +1,20 @@
+## [1.7.1](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.7.0...1.7.1) (2024-04-18)
+
+
+### Dependency updates
+
+* **deps:** update plugin com.gradle.develocity to v3.17.2 ([df86c48](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/df86c48c8588c6f5a62393f163fdb3cbc8285f9f))
+
+
+### Bug Fixes
+
+* add only finite in noise perceived (normalized) ([9c79f44](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/9c79f448babf691f9045a168fc38085892e42fc3))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.7.0 [skip ci] ([665c403](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/665c403cbcffe75a8ace2fd41d949f6ea114daf6))
+
 ## [1.7.0](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.6.0...1.7.0) (2024-04-18)
 
 
