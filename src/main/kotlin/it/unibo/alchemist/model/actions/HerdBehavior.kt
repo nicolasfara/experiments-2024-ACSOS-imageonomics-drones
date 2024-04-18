@@ -178,7 +178,7 @@ class HerdBehavior @JvmOverloads constructor(
                 ?: error("Property ${BodyCoverage::class} not found.")
             val centroidQualityProperty = node.properties.filterIsInstance<FovDistance<*>>().firstOrNull()
                 ?: error("Property ${FovDistance::class} not found.")
-            node.setConcentration(NoisePerceived.noisePerceivedMolecule, noisePerceivedProperty.computeSoundMetric())
+            // Write into molecule the metrics
             val (perceivedNoise, perceivedNoiseNormalized) = noisePerceivedProperty.computeSoundMetric()
             node.setConcentration(NoisePerceived.noisePerceivedMolecule, perceivedNoise)
             node.setConcentration(NoisePerceived.noisePerceivedMoleculeNormalized, perceivedNoiseNormalized)
