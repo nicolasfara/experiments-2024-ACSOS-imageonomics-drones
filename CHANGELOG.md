@@ -1,3 +1,15 @@
+## [1.9.1](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.9.0...1.9.1) (2024-04-19)
+
+
+### Bug Fixes
+
+* change name of the molecule ([b5cb14a](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/b5cb14afdf6b12a959517b82bd893874b64d33e6))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.9.0 [skip ci] ([467f141](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/467f141392df39265aa5eba1cb2cf16f0c2bcfe3))
+
 ## [1.9.0](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.8.0...1.9.0) (2024-04-19)
 
 
