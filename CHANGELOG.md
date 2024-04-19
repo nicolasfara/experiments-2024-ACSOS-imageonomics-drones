@@ -1,3 +1,17 @@
+## [1.9.0](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.8.0...1.9.0) (2024-04-19)
+
+
+### Features
+
+* add some data ([dabe09b](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/dabe09b9f8f998dad4186ad7d6a5a4d9d1d7878d))
+* generate geometric mean charts ([77f7064](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/77f7064c72b9602e6fcbed75d04fc56197bd6c0b))
+* reduce number of seeds ([ab65436](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/ab65436a62915b943aab3cc517d96f17a9f78837))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.8.0 [skip ci] ([6682eb5](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/6682eb5d76446fff06d1fd5f0119e2823c436cfe))
+
 ## [1.8.0](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.7.1...1.8.0) (2024-04-19)
 
 
