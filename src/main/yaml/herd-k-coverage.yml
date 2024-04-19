@@ -109,7 +109,7 @@ variables:
     formula: EnvironmentSize / 2
   Seed: &Seed
     min: 1
-    max: 150
+    max: 20
     step: 1
     default: 1
 
