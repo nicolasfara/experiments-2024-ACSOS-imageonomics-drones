@@ -250,7 +250,7 @@ export:
         aggregators: [mean, variance]
         value-filter: "onlyFinite"
         precision: 3
-      - molecule: "FoVDistance"
+      - molecule: "FovDistance"
         aggregators: [mean, variance]
         value-filter: "onlyFinite"
         precision: 3
