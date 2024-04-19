@@ -41,7 +41,7 @@ fun normalizationFunctionForAngle(angle: Double): Double {
 fun normalizationFunctionForRange(value: Double, min: Double, max: Double): Double {
     return sigmoid(
         linearizationFunction(value, min, max),
-        0.40,
+        1.0 / 3.0,
         4.0,
     )
 }
