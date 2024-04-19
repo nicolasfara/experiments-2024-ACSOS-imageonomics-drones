@@ -481,14 +481,14 @@ if __name__ == '__main__':
     dataset_means = means[current_experiment]
     dataset_stdevs = stdevs[current_experiment]
 
+    print(dataset_means.sel({"CamHerdRatio": 0.5, "NumberOfHerds": 8}))
+
     # Filter out the ff_linpro_ac algorithm
     dataset_means = dataset_means.where(dataset_means["Algorithm"] != "ff_linpro_ac", drop=True)
     dataset_stdevs = dataset_stdevs.where(dataset_stdevs["Algorithm"] != "ff_linpro_ac", drop=True)
 
     # Create the output directory for custom charts
     os.makedirs(f'{output_directory}/{current_experiment}/custom', exist_ok=True)
-
-    sns.color_palette("viridis", 4)
 
     def plot_metric_by_algorithm(dataset, cam_herd_ratio, number_of_herds):
         fig, ax = plt.subplots(1, 3, figsize=(16, 4), sharey=False, layout="constrained")
@@ -510,20 +510,49 @@ if __name__ == '__main__':
         for num_herds in dataset_means["NumberOfHerds"].to_numpy():
             metrics_by_algorithms = dataset_means.sel(
                 {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
-            )[["BodyCoverage[mean]", "CentroidQuality[mean]", "NoisePerceived[mean]"]].to_dataframe()
+            )[["BodyCoverage[mean]", "FoVDistance[mean]", "NoisePerceived[mean]"]].to_dataframe()
             metrics_by_algorithms.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
 
             plot_metric_by_algorithm(metrics_by_algorithms, cam_ratio, num_herds)
 
+    # Aggregate metric plotting
+
+    def aggregate_metric(v):
+        return v["BodyCoverage[mean]"] + v["FovDistance[mean]"] + (1 - v["NoisePerceived[mean]"])
+
+    dataset_means = dataset_means.assign(GlobalMetric=aggregate_metric)
+
+    def plot_global_metric_by_algorithm(ds, cam_herd_ratio, number_of_herds):
+        fig, ax = plt.subplots(1, 1, figsize=(10, 8))
+        sns.boxplot(ds, ax=ax, x="Algorithm", y="GlobalMetric", palette="viridis", hue="Algorithm")
+        ax.set_title(f"CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
+        ax.xaxis.grid(True)
+        ax.yaxis.grid(True)
+        ax.set(ylabel="Performance")
+        ax.xaxis.get_label().set_fontsize(16)
+
+        fig.savefig(f'{output_directory}/{current_experiment}/custom/global_metric_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
+
+    for cam_ratio in dataset_means["CamHerdRatio"].to_numpy():
+        for num_herds in dataset_means["NumberOfHerds"].to_numpy():
+            metrics_by_algorithms = dataset_means.sel(
+                {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
+            )[["GlobalMetric"]].to_dataframe()
+            metrics_by_algorithms.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
+
+            plot_global_metric_by_algorithm(metrics_by_algorithms, cam_ratio, num_herds)
+
+    ###########################################################################
+
     # Geometric average per algorithm
 
-    products = dataset_means[["BodyCoverage[mean]", "NoisePerceived[mean]", "CentroidQuality[mean]"]].prod(dim=["CamHerdRatio", "NumberOfHerds"], skipna=True)
+    products = dataset_means[
+        ["BodyCoverage[mean]", "NoisePerceived[mean]", "FovDistance[mean]"]
+    ].prod(dim=["CamHerdRatio", "NumberOfHerds"], skipna=True)
     dataset_geometric_mean = products ** (1 / len(dataset_means.time))
-
-    print(dataset_geometric_mean)
 
     dataset_geometric_mean["BodyCoverage[mean]"].plot.line(x="time", figsize=(12, 6))
     dataset_geometric_mean["NoisePerceived[mean]"].plot.line(x="time", figsize=(12, 6))
-    dataset_geometric_mean["CentroidQuality[mean]"].plot.line(x="time", figsize=(12, 6))
+    dataset_geometric_mean["FovDistance[mean]"].plot.line(x="time", figsize=(12, 6))
 
     plt.show()
