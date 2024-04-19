@@ -193,7 +193,7 @@ def beautifyValue(v):
 if __name__ == '__main__':
     # CONFIGURE SCRIPT
     # Where to find Alchemist data files
-    directory = 'build/export'
+    directory = 'data'
     # Where to save charts
     output_directory = 'charts'
     # How to name the summary of the processed data
@@ -481,35 +481,49 @@ if __name__ == '__main__':
     dataset_means = means[current_experiment]
     dataset_stdevs = stdevs[current_experiment]
 
-    # # Filter out the ff_linpro_ac algorithm
-    # dataset_means = dataset_means.where(dataset_means["Algorithm"] != "ff_linpro_ac", drop=True)
-    # dataset_stdevs = dataset_stdevs.where(dataset_stdevs["Algorithm"] != "ff_linpro_ac", drop=True)
-    #
-    # # Create the output directory for custom charts
-    # os.makedirs(f'{output_directory}/{current_experiment}/custom', exist_ok=True)
-    #
-    #
-    # def plot_metric_by_algorithm(dataset, cam_herd_ratio, number_of_herds):
-    #     fig, ax = plt.subplots(1, 3, figsize=(16, 4), sharey=False, layout="constrained")
-    #     fig.suptitle(f"CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
-    #
-    #     for a, metric in zip(ax, dataset.columns):
-    #         sns.boxplot(dataset, ax=a, x="Algorithm", y=metric, palette="viridis", hue=4)
-    #         a.set_title(metric)
-    #         a.xaxis.grid(True)
-    #         a.yaxis.grid(True)
-    #         a.set(ylabel=None)
-    #         a.xaxis.get_label().set_fontsize(16)
-    #
-    #     fig.savefig(f'{output_directory}/{current_experiment}/custom/metrics_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
-    #
-    #
-    # # Plot metrics by algorithms
-    # for cam_ratio in dataset_means["CamHerdRatio"].to_numpy():
-    #     for num_herds in dataset_means["NumberOfHerds"].to_numpy():
-    #         metrics_by_algorithms = dataset_means.sel(
-    #             {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
-    #         )[["BodyCoverage[mean]", "NoisePerceived[mean]", "CentroidQuality[mean]"]].to_dataframe()
-    #         metrics_by_algorithms.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
-    #
-    #         plot_metric_by_algorithm(metrics_by_algorithms, cam_ratio, num_herds)
+    # Filter out the ff_linpro_ac algorithm
+    dataset_means = dataset_means.where(dataset_means["Algorithm"] != "ff_linpro_ac", drop=True)
+    dataset_stdevs = dataset_stdevs.where(dataset_stdevs["Algorithm"] != "ff_linpro_ac", drop=True)
+
+    # Create the output directory for custom charts
+    os.makedirs(f'{output_directory}/{current_experiment}/custom', exist_ok=True)
+
+    sns.color_palette("viridis", 4)
+
+    def plot_metric_by_algorithm(dataset, cam_herd_ratio, number_of_herds):
+        fig, ax = plt.subplots(1, 3, figsize=(16, 4), sharey=False, layout="constrained")
+        fig.suptitle(f"CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
+
+        for a, metric in zip(ax, dataset.columns):
+            sns.boxplot(dataset, ax=a, x="Algorithm", y=metric, palette="viridis", hue="Algorithm")
+            a.set_title(metric)
+            a.xaxis.grid(True)
+            a.yaxis.grid(True)
+            a.set(ylabel="Performance" if metric != "NoisePerceived[mean]" else "dB")
+            a.xaxis.get_label().set_fontsize(16)
+
+        fig.savefig(f'{output_directory}/{current_experiment}/custom/metrics_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
+
+
+    # Plot metrics by algorithms
+    for cam_ratio in dataset_means["CamHerdRatio"].to_numpy():
+        for num_herds in dataset_means["NumberOfHerds"].to_numpy():
+            metrics_by_algorithms = dataset_means.sel(
+                {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
+            )[["BodyCoverage[mean]", "CentroidQuality[mean]", "NoisePerceived[mean]"]].to_dataframe()
+            metrics_by_algorithms.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
+
+            plot_metric_by_algorithm(metrics_by_algorithms, cam_ratio, num_herds)
+
+    # Geometric average per algorithm
+
+    products = dataset_means[["BodyCoverage[mean]", "NoisePerceived[mean]", "CentroidQuality[mean]"]].prod(dim=["CamHerdRatio", "NumberOfHerds"], skipna=True)
+    dataset_geometric_mean = products ** (1 / len(dataset_means.time))
+
+    print(dataset_geometric_mean)
+
+    dataset_geometric_mean["BodyCoverage[mean]"].plot.line(x="time", figsize=(12, 6))
+    dataset_geometric_mean["NoisePerceived[mean]"].plot.line(x="time", figsize=(12, 6))
+    dataset_geometric_mean["CentroidQuality[mean]"].plot.line(x="time", figsize=(12, 6))
+
+    plt.show()
