@@ -1,3 +1,22 @@
+## [1.8.0](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.7.1...1.8.0) (2024-04-19)
+
+
+### Features
+
+* update experiments as for paper corrections ([8866b71](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/8866b7167a47ca45cea6363dc3ec673f7b7c89a5))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/download-artifact action to v4.1.5 ([167c701](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/167c701db3ae48c2234457aaa5ffc16617e9c5a6))
+* **deps:** update actions/upload-artifact action to v4.3.2 ([62da774](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/62da7743d3c47b382bffe396c32f1ffc5996c56d))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.16 ([80838fb](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/80838fb099f0a09f65126e1c51447a99ea4a7780))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.7.1 [skip ci] ([369557d](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/369557d3fece2c4593f8c222111d981cd8aa49a0))
+
 ## [1.7.1](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.7.0...1.7.1) (2024-04-18)
 
 
