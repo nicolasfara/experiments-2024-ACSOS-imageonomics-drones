@@ -35,7 +35,7 @@ fun <T> Node<T>.getVisibleCameras(nodes: List<Node<T>>, visionMolecule: Molecule
 
 fun normalizationFunctionForAngle(angle: Double): Double {
     val normalizedValue = angle * 2 / PI
-    return sigmoid(normalizedValue, 0.35, 5.0)
+    return sigmoid(normalizedValue, 0.5, 5.0)
 }
 
 fun normalizationFunctionForRange(value: Double, min: Double, max: Double): Double {
