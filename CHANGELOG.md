@@ -1,3 +1,16 @@
+## [1.9.4](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.9.3...1.9.4) (2024-04-22)
+
+
+### Bug Fixes
+
+* use the right column for global qos ([a386fe5](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/a386fe571c12ad2278b5dbb1c628bf9d40f27424))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.9.3 [skip ci] ([9d6c6fa](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/9d6c6fa2ee39444f11b74e48bc703261b93866c3))
+* update data ([800240f](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/800240f59144bc46f77131a8479b752078f5cd09))
+
 ## [1.9.3](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.9.2...1.9.3) (2024-04-22)
 
 
