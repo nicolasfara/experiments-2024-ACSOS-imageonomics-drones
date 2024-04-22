@@ -17,7 +17,7 @@ class NoisePerceived<T>(
 
     companion object {
         val noisePerceivedMolecule = SimpleMolecule("NoisePerceived")
-        val noisePerceivedMoleculeNormalized = SimpleMolecule("NormalizedNoisePerceived")
+        val noisePerceivedMoleculeNormalized = SimpleMolecule("NoisePerceivedNormalized")
     }
 
     private val droneMolecule = SimpleMolecule("drone")
