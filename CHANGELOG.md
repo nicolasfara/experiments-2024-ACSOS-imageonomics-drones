@@ -1,3 +1,20 @@
+## [1.9.5](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.9.4...1.9.5) (2024-04-22)
+
+
+### Bug Fixes
+
+* revert to 150 seeds ([90f0f86](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/90f0f864368dddaaab2ba67de57e9877a90a6530))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v4.1.3 ([92eabc8](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/92eabc839980515a7c79e1f3cbdb7f81588bf2f3))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.9.4 [skip ci] ([fa06ac0](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/fa06ac0b918eaa7da3be8d102db7270558f694de))
+
 ## [1.9.4](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.9.3...1.9.4) (2024-04-22)
 
 
