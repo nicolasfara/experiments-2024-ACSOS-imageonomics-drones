@@ -510,7 +510,7 @@ if __name__ == '__main__':
         for num_herds in dataset_means["NumberOfHerds"].to_numpy():
             metrics_by_algorithms = dataset_means.sel(
                 {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
-            )[["BodyCoverage[mean]", "FoVDistance[mean]", "NoisePerceived[mean]"]].to_dataframe()
+            )[["BodyCoverage[mean]", "FovDistance[mean]", "NoisePerceived[mean]"]].to_dataframe()
             metrics_by_algorithms.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
 
             plot_metric_by_algorithm(metrics_by_algorithms, cam_ratio, num_herds)
