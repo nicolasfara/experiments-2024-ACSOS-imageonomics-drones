@@ -481,8 +481,6 @@ if __name__ == '__main__':
     dataset_means = means[current_experiment]
     dataset_stdevs = stdevs[current_experiment]
 
-    print(dataset_means.sel({"CamHerdRatio": 0.5, "NumberOfHerds": 8}))
-
     # Filter out the ff_linpro_ac algorithm
     dataset_means = dataset_means.where(dataset_means["Algorithm"] != "ff_linpro_ac", drop=True)
     dataset_stdevs = dataset_stdevs.where(dataset_stdevs["Algorithm"] != "ff_linpro_ac", drop=True)
@@ -518,14 +516,14 @@ if __name__ == '__main__':
     # Aggregate metric plotting
 
     def aggregate_metric(v):
-        return v["BodyCoverage[mean]"] + v["FovDistance[mean]"] + (1 - v["NoisePerceived[mean]"])
+        return v["BodyCoverage[mean]"] * v["FovDistance[mean]"] * (1 - v["NoisePerceivedNormalized[mean]"])
 
     dataset_means = dataset_means.assign(GlobalMetric=aggregate_metric)
 
     def plot_global_metric_by_algorithm(ds, cam_herd_ratio, number_of_herds):
         fig, ax = plt.subplots(1, 1, figsize=(10, 8))
         sns.boxplot(ds, ax=ax, x="Algorithm", y="GlobalMetric", palette="viridis", hue="Algorithm")
-        ax.set_title(f"CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
+        ax.set_title(f"Global Metric - CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
         ax.xaxis.grid(True)
         ax.yaxis.grid(True)
         ax.set(ylabel="Performance")
