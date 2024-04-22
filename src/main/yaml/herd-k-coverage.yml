@@ -68,9 +68,9 @@ variables:
   Algorithm: &Algorithm
     type: ListOf
     parameters:
+      - "bc_re_c"
       - "ff_linpro_c"
       - "sm_av"
-      - "bc_re_c"
       - "ff_linpro"
       - "ff_linpro_ac"
   ClusteringDistance: &ClusteringDistance
@@ -96,7 +96,7 @@ variables:
 ##### Other
   CamHerdRatio:
     type: ArbitraryVariable
-    parameters: [2.0, 0.5, 1.0, 2.0, 3.0]
+    parameters: [2.0, 1.0, 2.0, 3.0]
   NumberOfHerds: &HerdNumber
     type: ArbitraryVariable
     parameters: [8, 2, 4, 8]
@@ -109,7 +109,7 @@ variables:
     formula: EnvironmentSize / 2
   Seed: &Seed
     min: 1
-    max: 20
+    max: 150
     step: 1
     default: 1
 
