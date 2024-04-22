@@ -232,28 +232,22 @@ export:
       interval: 10.0
       exportPath: "data"
     data:
-      - type: Time
-        parameters:
-          precision: 1
+      - time
       - type: CamerasKCoverage
         parameters: ["vision", "zebra", *MaxCamerasPerTarget]
       - type: DistanceTraveled
       - molecule: "NoisePerceivedNormalized"
         aggregators: [mean, variance]
         value-filter: "onlyFinite"
-        precision: 3
       - molecule: "NoisePerceived"
         aggregators: [mean, variance, percentile90, max]
         value-filter: "onlyFinite"
-        precision: 3
       - molecule: "BodyCoverage"
         aggregators: [mean, variance]
         value-filter: "onlyFinite"
-        precision: 3
       - molecule: "FovDistance"
         aggregators: [mean, variance]
         value-filter: "onlyFinite"
-        precision: 3
 
 terminate:
   - type: AfterTime
