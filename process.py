@@ -482,8 +482,8 @@ if __name__ == '__main__':
     dataset_stdevs = stdevs[current_experiment]
 
     # Filter out the ff_linpro_ac algorithm
-    dataset_means = dataset_means.where(dataset_means["Algorithm"] != "ff_linpro_ac", drop=True)
-    dataset_stdevs = dataset_stdevs.where(dataset_stdevs["Algorithm"] != "ff_linpro_ac", drop=True)
+    # dataset_means = dataset_means.where(dataset_means["Algorithm"] != "ff_linpro_ac", drop=True)
+    # dataset_stdevs = dataset_stdevs.where(dataset_stdevs["Algorithm"] != "ff_linpro_ac", drop=True)
 
     # Create the output directory for custom charts
     os.makedirs(f'{output_directory}/{current_experiment}/custom', exist_ok=True)
