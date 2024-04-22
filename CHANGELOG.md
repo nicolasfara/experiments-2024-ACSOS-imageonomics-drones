@@ -1,3 +1,18 @@
+## [1.9.2](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.9.1...1.9.2) (2024-04-22)
+
+
+### Bug Fixes
+
+* fix typo in column name ([4dd99da](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/4dd99daca29ddb8c484300efcdfcb5124d2620ce))
+* set mu=0.5 for body converage normalization ([e0586af](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/e0586af7e9522b95b892fd6dc68e87371a92c51f))
+
+
+### General maintenance
+
+* add missing data ([24ab5c5](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/24ab5c5634f71e55f2236d78ca74e2b47f8466c4))
+* **release:** update gradle.properties .env versions to 1.9.1 [skip ci] ([2780712](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/27807125fab592e9965b20c80de89fdf91134c4b))
+* remove precision parameter ([cb472a9](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/cb472a935ed7401ff27a7cb9d4f89f46138098f6))
+
 ## [1.9.1](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.9.0...1.9.1) (2024-04-19)
 
 
