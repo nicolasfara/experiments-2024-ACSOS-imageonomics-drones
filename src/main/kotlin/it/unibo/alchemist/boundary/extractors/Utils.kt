@@ -3,11 +3,12 @@ package it.unibo.alchemist.boundary.extractors
 import it.unibo.alchemist.model.Molecule
 import it.unibo.alchemist.model.Node
 import it.unibo.alchemist.model.VisibleNode
+import it.unibo.alchemist.model.actions.CameraCaptureAnimals
 import it.unibo.experiment.toBoolean
 import kotlin.math.PI
 import kotlin.math.pow
 
-
+val cameras = mutableListOf<Node<*>>()
 fun Node<*>.isTarget(targetMolecule: Molecule) =
     contains(targetMolecule) && getConcentration(targetMolecule).toBoolean()
 
@@ -27,14 +28,21 @@ fun <T> Node<T>.getVisibleTargets(visionMolecule: Molecule, targetMolecule: Mole
         (this as Iterable<VisibleNode<T, *>>).filter { it.node.isTarget(targetMolecule) }
     }
 
-fun <T> Node<T>.getVisibleCameras(nodes: List<Node<T>>, visionMolecule: Molecule, targetMolecule: Molecule) =
-//    nodes.filter { it.contains(visionMolecule) }
-//        .filter { it.getVisibleTargets(visionMolecule, targetMolecule).any { node -> node == this } }
-    nodes.filter { n ->
-        n.isCamera(visionMolecule) &&
-        n.getVisibleTargets(visionMolecule, targetMolecule).map { it.node }.contains(this)
+@Suppress("UNCHECKED_CAST")
+fun <T> Node<T>.getVisibleCameras(nodes: List<Node<T>>, visionMolecule: Molecule): List<Node<T>> {
+    if (cameras.isEmpty()) {
+        cameras.addAll(nodes.filter { it.isCamera(visionMolecule) })
+        cameras
+    } else {
+        cameras
     }
-
+    return cameras.filter { n ->
+        n.isCamera(visionMolecule)
+    }.map {
+        it to (it.properties.filterIsInstance<CameraWithBlindSpot<Any>>().firstOrNull()
+            ?: error("Property ${CameraCaptureAnimals::class} not found."))
+    }.filter { it.second.influentialNodes().any { node -> node == this } }.map { it.first as Node<T> }
+}
 fun normalizationFunctionForAngle(angle: Double): Double {
     return angle * 2 / PI
 //    return sigmoid(normalizedValue, 0.5, 5.0)

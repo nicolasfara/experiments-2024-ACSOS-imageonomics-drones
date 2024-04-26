@@ -32,7 +32,7 @@ class FovDistance<T>(
 
     fun computeFoVDistance(whenNotCovered: Double): Double {
         val nodes = environment.nodes
-        val visibleCameras = node.getVisibleCameras(nodes, visionMolecule, targetMolecule)
+        val visibleCameras = node.getVisibleCameras(nodes, visionMolecule)
         return metricCalculator.computeQualityMetric(
             environment.getPosition(node).asCoordinate(),
             visibleCameras.map { it.properties.filterIsInstance<CameraWithBlindSpot<Any>>().firstOrNull()
@@ -44,7 +44,7 @@ class FovDistance<T>(
 
     private fun Euclidean2DPosition.asCoordinate(): Coordinate = Coordinate(x, y)
     private fun CameraWithBlindSpot<*>.geometryRepresentation(): Geometry =
-        ShapeReader.read(transformShapeToEnvironmentPosition(), flatness, geometry)
+        ShapeReader.read(this.transformShapeToEnvironmentPosition(), flatness, geometry)
 
     private fun CameraWithBlindSpot<*>.centroid(): Coordinate =
         Centroid.getCentroid(geometryRepresentation())

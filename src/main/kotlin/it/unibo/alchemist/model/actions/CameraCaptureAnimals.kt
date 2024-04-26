@@ -29,7 +29,7 @@ class CameraCaptureAnimals @JvmOverloads constructor(
 ) : AbstractAction<Any>(node) {
 
     private val fieldOfView = node.properties.filterIsInstance<CameraWithBlindSpot<Any>>().firstOrNull()
-        ?: error("Property ${BodyCoverage::class} not found.")
+        ?: error("Property ${CameraCaptureAnimals::class} not found.")
 
     /**
      * used by GUI to draw clusters.

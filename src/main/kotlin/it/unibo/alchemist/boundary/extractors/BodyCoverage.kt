@@ -32,7 +32,7 @@ class BodyCoverage<T>(
             "Expected a Physics2DEnvironment but got ${environment::class}"
         }
         val nodes = environment.nodes
-        val visibleCameras = node.getVisibleCameras(nodes, visionMolecule, targetMolecule)
+        val visibleCameras = node.getVisibleCameras(nodes, visionMolecule)
         return metricCalculator.computeMetricForNode(
             environment.getPosition(node) to environment.getHeading(node),
             visibleCameras.map { environment.getPosition(it) },

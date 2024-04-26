@@ -16,8 +16,8 @@ class CameraWithBlindSpot<T>(
     val fovDistance: Double,
     val aperture: Double,
 ): NodeProperty<T> {
-    private val fovShape = environment.shapeFactory.circleSector(fovDistance, aperture, 0.0)
-    private val blindSpotShape = environment.shapeFactory.circleSector(blindSpotDistance, aperture, 0.0)
+    private val fovShape = environment.shapeFactory.circleSector(fovDistance, Math.toRadians(aperture), 0.0)
+    private val blindSpotShape = environment.shapeFactory.circleSector(blindSpotDistance, Math.toRadians(aperture), 0.0)
 
     init {
         require(blindSpotDistance in 0.0..fovDistance)
@@ -26,11 +26,12 @@ class CameraWithBlindSpot<T>(
     override fun cloneOnNewNode(node: Node<T>): NodeProperty<T> = CameraWithBlindSpot(environment, node, blindSpotDistance, fovDistance, aperture)
 
     fun influentialNodes(): List<Node<T>> = environment.getNodesWithin(
-        fovShape.transformed {
-            origin(environment.getPosition(node))
-            rotate(environment.getHeading(node))
-        },
-    ).minus(nodesInBlindSpot().toSet())
+            fovShape.transformed {
+                origin(environment.getPosition(node))
+                rotate(environment.getHeading(node))
+            },
+        ).minus(nodesInBlindSpot().toSet())
+
 
     fun shapeRepresentation(): Shape {
         val angle: Double = aperture
@@ -68,17 +69,14 @@ class CameraWithBlindSpot<T>(
     }
 
     fun contains(point: Euclidean2DPosition): Boolean {
-        val pointShape = environment.shapeFactory.circle(1.0).transformed {
-            origin(point)
-        }
         val intersectFoV = fovShape.transformed {
             origin(environment.getPosition(node))
             rotate(environment.getHeading(node))
-        }.intersects(pointShape)
+        }.contains(point)
         val intersectBlindSpot = blindSpotShape.transformed {
             origin(environment.getPosition(node))
             rotate(environment.getHeading(node))
-        }.intersects(pointShape)
+        }.contains(point)
         return intersectFoV && !intersectBlindSpot
     }
     private fun nodesInBlindSpot(): List<Node<T>> = environment.getNodesWithin(

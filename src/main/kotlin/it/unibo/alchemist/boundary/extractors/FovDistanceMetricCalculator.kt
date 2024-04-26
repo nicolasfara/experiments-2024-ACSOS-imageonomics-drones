@@ -19,6 +19,8 @@ class CentroidQualityMetricCalculator {
     private fun CameraQualityInformation.metricForCamera(animalPosition: Coordinate): Double {
         val worstCaseVector = this.worstCaseCoordinateVector()
         val animalVector = Vector2D(animalPosition.x - this.centroid().x, animalPosition.y - this.centroid().y)
-        return (worstCaseVector.length() - animalVector.length()) / worstCaseVector.length()
+        val distance = (worstCaseVector.length() - animalVector.length()) / worstCaseVector.length()
+        require(distance in 0.0..1.0) { "The distance should be between 0 and 1" }
+        return distance
     }
 }
