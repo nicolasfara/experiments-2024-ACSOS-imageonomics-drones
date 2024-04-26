@@ -504,21 +504,23 @@ if __name__ == '__main__':
         fig.savefig(f'{output_directory}/{current_experiment}/custom/metrics_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
 
     def plot_k_coverage_by_algorithm(dataset, errors, cam_her_ratio, number_of_herds):
-        fig, ax = plt.subplots(1, 2, figsize=(16, 4), sharey=False, layout="constrained")
+        fig, ax = plt.subplots(1, 2, figsize=(16, 5), sharey=False, layout="constrained")
         fig.suptitle(f"CamHerdRatio={cam_her_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
 
         plus_sigma = dataset + errors
         minus_sigma = dataset - errors
         # get time values from index
-        time = dataset.index.get_level_values("time")
+        time = np.arange(minTime, maxTime, (maxTime - minTime) / timeSamples)
 
         for a, k in zip(ax, dataset.columns):
             sns.lineplot(dataset, ax=a, x="time", y=k, palette="viridis", hue="Algorithm")
+            for i, algo in enumerate(dataset[k].index.get_level_values(0).unique()):
+                a.fill_between(time, minus_sigma[k][algo], plus_sigma[k][algo], alpha=0.3, color=sns.color_palette('viridis')[i])
+                #a.fill_between(dataset.index.get_level_values(1), minus_sigma[k], plus_sigma[k], alpha=0.2)
             a.set_title(k)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
             a.xaxis.get_label().set_fontsize(16)
-            a.fill_between(time, plus_sigma[k], minus_sigma[k], alpha=0.2)
 
         fig.savefig(f'{output_directory}/{current_experiment}/custom/k_coverage_by_algorithms_CamHerRatio={cam_her_ratio}_NumberOfHerds={number_of_herds}.pdf')
 
@@ -540,6 +542,8 @@ if __name__ == '__main__':
                 {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
             )[["1-coverage", "2-coverage"]].to_dataframe()
             k_coverage_by_algorithm_errors.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
+            # convert to stdev
+            # k_coverage_by_algorithm_errors = k_coverage_by_algorithm_errors ** 0.5
 
             plot_k_coverage_by_algorithm(k_coverage_by_algorithm, k_coverage_by_algorithm_errors, cam_ratio, num_herds)
 
@@ -582,13 +586,5 @@ if __name__ == '__main__':
     dataset_geometric_mean["BodyCoverage[mean]"].plot.line(x="time", figsize=(12, 6))
     dataset_geometric_mean["NoisePerceived[mean]"].plot.line(x="time", figsize=(12, 6))
     dataset_geometric_mean["FovDistance[mean]"].plot.line(x="time", figsize=(12, 6))
-
-    # 2-k coverage
-    dataset_means.sel({"CamHerdRatio": 1.0, "NumberOfHerds": 2})["2-coverage"].plot.line(x="time", figsize=(12, 6))
-    dataset_means.sel({"CamHerdRatio": 3.0, "NumberOfHerds": 8})["2-coverage"].plot.line(x="time", figsize=(12, 6))
-
-    dataset_means.sel({"CamHerdRatio": 1.0, "NumberOfHerds": 2})["1-coverage"].plot.line(x="time", figsize=(12, 6))
-    dataset_means.sel({"CamHerdRatio": 3.0, "NumberOfHerds": 8})["1-coverage"].plot.line(x="time", figsize=(12, 6))
-    # dataset_means["1-coverage"].plot.line(x="time", figsize=(12, 6))
 
     plt.show()
