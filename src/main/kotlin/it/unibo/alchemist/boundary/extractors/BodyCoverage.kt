@@ -24,9 +24,10 @@ class BodyCoverage<T>(
 
     companion object {
         val bodyCoverageMolecule = SimpleMolecule("BodyCoverage")
+        val bodyCoverageOnlyCovered = SimpleMolecule("BodyCoverageOnlyCovered")
     }
 
-    fun computeBodyCoverageMetric(): Double {
+    fun computeBodyCoverageMetric(whenNotCovered: Double): Double {
         require(environment is Physics2DEnvironment) {
             "Expected a Physics2DEnvironment but got ${environment::class}"
         }
@@ -34,7 +35,8 @@ class BodyCoverage<T>(
         val visibleCameras = node.getVisibleCameras(nodes, visionMolecule, targetMolecule)
         return metricCalculator.computeMetricForNode(
             environment.getPosition(node) to environment.getHeading(node),
-            visibleCameras.map { environment.getPosition(it) }
+            visibleCameras.map { environment.getPosition(it) },
+            whenNotCovered,
         )
     }
 

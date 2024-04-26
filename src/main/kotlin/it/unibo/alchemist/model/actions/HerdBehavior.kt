@@ -182,8 +182,12 @@ class HerdBehavior @JvmOverloads constructor(
             val (perceivedNoise, perceivedNoiseNormalized) = noisePerceivedProperty.computeSoundMetric()
             node.setConcentration(NoisePerceived.noisePerceivedMolecule, perceivedNoise)
             node.setConcentration(NoisePerceived.noisePerceivedMoleculeNormalized, perceivedNoiseNormalized)
-            node.setConcentration(BodyCoverage.bodyCoverageMolecule, bodyCoverageProperty.computeBodyCoverageMetric())
-            node.setConcentration(FovDistance.fovDistanceMolecule, centroidQualityProperty.computeFoVDistance())
+
+            node.setConcentration(BodyCoverage.bodyCoverageMolecule, bodyCoverageProperty.computeBodyCoverageMetric(0.0))
+            node.setConcentration(BodyCoverage.bodyCoverageOnlyCovered, bodyCoverageProperty.computeBodyCoverageMetric(Double.NaN))
+
+            node.setConcentration(FovDistance.fovDistanceMolecule, centroidQualityProperty.computeFoVDistance(0.0))
+            node.setConcentration(FovDistance.fovDistanceOnlyCovered, centroidQualityProperty.computeFoVDistance(Double.NaN))
         }
     }
 

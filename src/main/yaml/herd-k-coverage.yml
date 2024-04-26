@@ -72,7 +72,7 @@ variables:
       - "ff_linpro_c"
       - "sm_av"
       - "ff_linpro"
-      - "ff_linpro_ac"
+#      - "ff_linpro_ac"
   ClusteringDistance: &ClusteringDistance
 #    type: ListOf
 #    parameters: [60]
@@ -109,7 +109,7 @@ variables:
     formula: EnvironmentSize / 2
   Seed: &Seed
     min: 1
-    max: 150
+    max: 4
     step: 1
     default: 1
 
@@ -245,8 +245,14 @@ export:
       - molecule: "BodyCoverage"
         aggregators: [mean, variance]
         value-filter: "onlyFinite"
+      - molecule: "BodyCoverageOnlyCovered"
+        aggregators: [ mean, variance ]
+        value-filter: "onlyFinite"
       - molecule: "FovDistance"
         aggregators: [mean, variance]
+        value-filter: "onlyFinite"
+      - molecule: "FovDistanceOnlyCovered"
+        aggregators: [ mean, variance ]
         value-filter: "onlyFinite"
 
 terminate:

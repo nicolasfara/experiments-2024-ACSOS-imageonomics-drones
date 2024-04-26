@@ -24,19 +24,21 @@ class FovDistance<T>(
 
     companion object {
         val fovDistanceMolecule = SimpleMolecule("FovDistance")
+        val fovDistanceOnlyCovered = SimpleMolecule("FovDistanceOnlyCovered")
         private val flatness = 1.0
     }
 
     override fun cloneOnNewNode(node: Node<T>): NodeProperty<T> = FovDistance(environment, node, visionMolecule.name, targetMolecule.name)
 
-    fun computeFoVDistance(): Double {
+    fun computeFoVDistance(whenNotCovered: Double): Double {
         val nodes = environment.nodes
         val visibleCameras = node.getVisibleCameras(nodes, visionMolecule, targetMolecule)
         return metricCalculator.computeQualityMetric(
             environment.getPosition(node).asCoordinate(),
             visibleCameras.map { it.properties.filterIsInstance<CameraWithBlindSpot<Any>>().firstOrNull()
                 ?.asCameraQualityInformation()
-                ?: error("Property ${CameraWithBlindSpot::class} not found.") }
+                ?: error("Property ${CameraWithBlindSpot::class} not found.") },
+            whenNotCovered
         )
     }
 

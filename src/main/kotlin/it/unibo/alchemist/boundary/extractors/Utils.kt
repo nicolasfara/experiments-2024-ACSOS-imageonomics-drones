@@ -28,14 +28,16 @@ fun <T> Node<T>.getVisibleTargets(visionMolecule: Molecule, targetMolecule: Mole
     }
 
 fun <T> Node<T>.getVisibleCameras(nodes: List<Node<T>>, visionMolecule: Molecule, targetMolecule: Molecule) =
+//    nodes.filter { it.contains(visionMolecule) }
+//        .filter { it.getVisibleTargets(visionMolecule, targetMolecule).any { node -> node == this } }
     nodes.filter { n ->
         n.isCamera(visionMolecule) &&
         n.getVisibleTargets(visionMolecule, targetMolecule).map { it.node }.contains(this)
     }
 
 fun normalizationFunctionForAngle(angle: Double): Double {
-    val normalizedValue = angle * 2 / PI
-    return sigmoid(normalizedValue, 0.5, 5.0)
+    return angle * 2 / PI
+//    return sigmoid(normalizedValue, 0.5, 5.0)
 }
 
 fun normalizationFunctionForRange(value: Double, min: Double, max: Double): Double {
@@ -47,7 +49,8 @@ fun normalizationFunctionForRange(value: Double, min: Double, max: Double): Doub
 }
 
 fun linearizationFunction(value: Double, min: Double, max: Double) = when {
-    value >= max -> 1.0 // If  value is greater than MAX then fix it to 1.0
+    value > max -> error("Should not happen")
+    value == max -> 1.0 // If  value is greater than MAX then fix it to 1.0
     else -> (value - min) / (max - min) // Change range into [0..1]
 }
 

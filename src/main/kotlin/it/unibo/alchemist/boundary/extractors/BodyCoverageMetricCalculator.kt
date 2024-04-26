@@ -21,6 +21,7 @@ class BodyCoverageMetricCalculator(
     fun computeMetricForNode(
         bodyPositionAndAngle: Pair<Euclidean2DPosition, Euclidean2DPosition>,
         camerasPositionsAndAngles: List<Euclidean2DPosition>,
+        whenNotCovered: Double,
     ): Double {
         val body = createApproximatedEllipseForBody(
             bodyPositionAndAngle.first,
@@ -30,6 +31,9 @@ class BodyCoverageMetricCalculator(
             segments,
         )
         val cameras = camerasPositionsAndAngles.map { Coordinate(it.x, it.y) }
+        if (cameras.isEmpty()) {
+            return whenNotCovered
+        }
 
         val segmentsAndAngles = cameras.flatMap { visibleSidesFromCamera(body, it) }
             .groupBy({ it.first }, { it.second })

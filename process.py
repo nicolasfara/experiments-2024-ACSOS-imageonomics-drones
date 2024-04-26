@@ -204,7 +204,7 @@ if __name__ == '__main__':
     # Number of time samples 
     timeSamples = 100
     # time management
-    minTime = 300
+    minTime = 0
     maxTime = 1800 - minTime
     timeColumnName = 'time'
     logarithmicTime = False
@@ -304,7 +304,8 @@ if __name__ == '__main__':
             lastTimeProcessed = pickle.load(open('timeprocessed', 'rb'))
         except:
             lastTimeProcessed = -1
-        shouldRecompute = not os.path.exists(".skip_data_process") and newestFileTime != lastTimeProcessed
+        # shouldRecompute = not os.path.exists(".skip_data_process") and newestFileTime != lastTimeProcessed
+        shouldRecompute = True
         if not shouldRecompute:
             try:
                 means = pickle.load(open(pickleOutput + '_mean', 'rb'))
@@ -489,7 +490,7 @@ if __name__ == '__main__':
     os.makedirs(f'{output_directory}/{current_experiment}/custom', exist_ok=True)
 
     def plot_metric_by_algorithm(dataset, cam_herd_ratio, number_of_herds):
-        fig, ax = plt.subplots(1, 3, figsize=(16, 4), sharey=False, layout="constrained")
+        fig, ax = plt.subplots(1, 5, figsize=(16, 4), sharey=False, layout="constrained")
         fig.suptitle(f"CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
 
         for a, metric in zip(ax, dataset.columns):
@@ -502,13 +503,12 @@ if __name__ == '__main__':
 
         fig.savefig(f'{output_directory}/{current_experiment}/custom/metrics_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
 
-
     # Plot metrics by algorithms
     for cam_ratio in dataset_means["CamHerdRatio"].to_numpy():
         for num_herds in dataset_means["NumberOfHerds"].to_numpy():
             metrics_by_algorithms = dataset_means.sel(
                 {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
-            )[["BodyCoverage[mean]", "FovDistance[mean]", "NoisePerceived[mean]"]].to_dataframe()
+            )[["BodyCoverage[mean]", "BodyCoverageOnlyCovered[mean]", "FovDistance[mean]", "FovDistanceOnlyCovered[mean]", "NoisePerceived[mean]"]].to_dataframe()
             metrics_by_algorithms.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
 
             plot_metric_by_algorithm(metrics_by_algorithms, cam_ratio, num_herds)
@@ -516,7 +516,7 @@ if __name__ == '__main__':
     # Aggregate metric plotting
 
     def aggregate_metric(v):
-        return v["BodyCoverage[mean]"] * v["FovDistance[mean]"] * (1 - v["NoisePerceivedNormalized[mean]"])
+        return v["1-coverage"] * ((v["BodyCoverageOnlyCovered[mean]"] + v["FovDistanceOnlyCovered[mean]"]) / 2) * (1 - v["NoisePerceivedNormalized[mean]"])
 
     dataset_means = dataset_means.assign(GlobalMetric=aggregate_metric)
 
@@ -552,5 +552,13 @@ if __name__ == '__main__':
     dataset_geometric_mean["BodyCoverage[mean]"].plot.line(x="time", figsize=(12, 6))
     dataset_geometric_mean["NoisePerceived[mean]"].plot.line(x="time", figsize=(12, 6))
     dataset_geometric_mean["FovDistance[mean]"].plot.line(x="time", figsize=(12, 6))
+
+    # 2-k coverage
+    dataset_means.sel({"CamHerdRatio": 1.0, "NumberOfHerds": 2})["2-coverage"].plot.line(x="time", figsize=(12, 6))
+    dataset_means.sel({"CamHerdRatio": 3.0, "NumberOfHerds": 8})["2-coverage"].plot.line(x="time", figsize=(12, 6))
+
+    dataset_means.sel({"CamHerdRatio": 1.0, "NumberOfHerds": 2})["1-coverage"].plot.line(x="time", figsize=(12, 6))
+    dataset_means.sel({"CamHerdRatio": 3.0, "NumberOfHerds": 8})["1-coverage"].plot.line(x="time", figsize=(12, 6))
+    # dataset_means["1-coverage"].plot.line(x="time", figsize=(12, 6))
 
     plt.show()

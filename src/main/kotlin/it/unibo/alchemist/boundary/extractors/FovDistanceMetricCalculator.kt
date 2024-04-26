@@ -9,8 +9,12 @@ fun CameraQualityInformation.furthestPoint(): Coordinate = this.second
 fun CameraQualityInformation.worstCaseCoordinateVector(): Vector2D =
     Vector2D(this.furthestPoint().x - this.centroid().x, this.furthestPoint().y - this.centroid().y)
 class CentroidQualityMetricCalculator {
-    fun computeQualityMetric(animalPosition: Coordinate, cameras: List<CameraQualityInformation>): Double =
-        cameras.maxOfOrNull { it.metricForCamera(animalPosition) } ?: 0.0
+    fun computeQualityMetric(
+        animalPosition: Coordinate,
+        cameras: List<CameraQualityInformation>,
+        whenNotCovered: Double,
+    ): Double =  cameras.maxOfOrNull { it.metricForCamera(animalPosition) } ?: whenNotCovered
+
 
     private fun CameraQualityInformation.metricForCamera(animalPosition: Coordinate): Double {
         val worstCaseVector = this.worstCaseCoordinateVector()
