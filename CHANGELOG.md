@@ -1,3 +1,32 @@
+## [1.9.6](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.9.5...1.9.6) (2024-04-26)
+
+
+### Dependency updates
+
+* **deps:** update alchemist to v33.1.0 ([d5598c4](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/d5598c44d7a2105d729605d4c2209111fc98eea9))
+
+
+### Bug Fixes
+
+* correctly capture the node inside the camera ([fefbe2e](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/fefbe2ed37a850b8371150026be53ccb3ea3fc7c))
+* enable delta for fov metric ([e240015](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/e240015bef8e503e10ebb61efe62085fad7db1a4))
+* remove sigmoid and compute other metrics consdering only covered nodes ([8286ec8](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/8286ec83be1c5a36d6f049942f1cbeb5f1653039))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v4.1.4 ([6239b39](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/6239b3917b5fcb304d94345d6271f48e856511de))
+* **deps:** update actions/download-artifact action to v4.1.6 ([2189777](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/2189777f358b0d6f2e2a605626eeb710490ad31f))
+* **deps:** update actions/download-artifact action to v4.1.7 ([4363b50](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/4363b5055cd6789743daa6718ee1dbf2c3f858f1))
+* **deps:** update actions/upload-artifact action to v4.3.3 ([79c9f73](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/79c9f73c8bf0f9c764249080c8aa39051f993554))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.17 ([f811d30](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/f811d30abbc149421663e5c4a79f2250d4c0f21c))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.9.5 [skip ci] ([244179d](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/244179dd7d0bf32c23a3e40f1a18e8baf192e158))
+* update data ([100e38b](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/100e38b64dbe561c256335e37562ba71a5083cb4))
+
 ## [1.9.5](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.9.4...1.9.5) (2024-04-22)
 
 
