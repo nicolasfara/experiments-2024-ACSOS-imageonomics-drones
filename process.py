@@ -503,6 +503,25 @@ if __name__ == '__main__':
 
         fig.savefig(f'{output_directory}/{current_experiment}/custom/metrics_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
 
+    def plot_k_coverage_by_algorithm(dataset, errors, cam_her_ratio, number_of_herds):
+        fig, ax = plt.subplots(1, 2, figsize=(16, 4), sharey=False, layout="constrained")
+        fig.suptitle(f"CamHerdRatio={cam_her_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
+
+        plus_sigma = dataset + errors
+        minus_sigma = dataset - errors
+        # get time values from index
+        time = dataset.index.get_level_values("time")
+
+        for a, k in zip(ax, dataset.columns):
+            sns.lineplot(dataset, ax=a, x="time", y=k, palette="viridis", hue="Algorithm")
+            a.set_title(k)
+            a.xaxis.grid(True)
+            a.yaxis.grid(True)
+            a.xaxis.get_label().set_fontsize(16)
+            a.fill_between(time, plus_sigma[k], minus_sigma[k], alpha=0.2)
+
+        fig.savefig(f'{output_directory}/{current_experiment}/custom/k_coverage_by_algorithms_CamHerRatio={cam_her_ratio}_NumberOfHerds={number_of_herds}.pdf')
+
     # Plot metrics by algorithms
     for cam_ratio in dataset_means["CamHerdRatio"].to_numpy():
         for num_herds in dataset_means["NumberOfHerds"].to_numpy():
@@ -512,6 +531,17 @@ if __name__ == '__main__':
             metrics_by_algorithms.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
 
             plot_metric_by_algorithm(metrics_by_algorithms, cam_ratio, num_herds)
+
+            k_coverage_by_algorithm = dataset_means.sel(
+                {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
+            )[["1-coverage", "2-coverage"]].to_dataframe()
+            k_coverage_by_algorithm.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
+            k_coverage_by_algorithm_errors = dataset_stdevs.sel(
+                {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
+            )[["1-coverage", "2-coverage"]].to_dataframe()
+            k_coverage_by_algorithm_errors.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
+
+            plot_k_coverage_by_algorithm(k_coverage_by_algorithm, k_coverage_by_algorithm_errors, cam_ratio, num_herds)
 
     # Aggregate metric plotting
 

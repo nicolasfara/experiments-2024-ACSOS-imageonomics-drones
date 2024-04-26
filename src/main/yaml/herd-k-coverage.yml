@@ -68,8 +68,8 @@ variables:
   Algorithm: &Algorithm
     type: ListOf
     parameters:
-      - "bc_re_c"
       - "ff_linpro_c"
+      - "bc_re_c"
       - "sm_av"
       - "ff_linpro"
 #      - "ff_linpro_ac"

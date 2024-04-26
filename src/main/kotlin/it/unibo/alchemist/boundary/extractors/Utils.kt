@@ -8,7 +8,6 @@ import it.unibo.experiment.toBoolean
 import kotlin.math.PI
 import kotlin.math.pow
 
-val cameras = mutableListOf<Node<*>>()
 fun Node<*>.isTarget(targetMolecule: Molecule) =
     contains(targetMolecule) && getConcentration(targetMolecule).toBoolean()
 
@@ -28,20 +27,13 @@ fun <T> Node<T>.getVisibleTargets(visionMolecule: Molecule, targetMolecule: Mole
         (this as Iterable<VisibleNode<T, *>>).filter { it.node.isTarget(targetMolecule) }
     }
 
-@Suppress("UNCHECKED_CAST")
 fun <T> Node<T>.getVisibleCameras(nodes: List<Node<T>>, visionMolecule: Molecule): List<Node<T>> {
-    if (cameras.isEmpty()) {
-        cameras.addAll(nodes.filter { it.isCamera(visionMolecule) })
-        cameras
-    } else {
-        cameras
-    }
-    return cameras.filter { n ->
+    return nodes.filter { n ->
         n.isCamera(visionMolecule)
     }.map {
         it to (it.properties.filterIsInstance<CameraWithBlindSpot<Any>>().firstOrNull()
             ?: error("Property ${CameraCaptureAnimals::class} not found."))
-    }.filter { it.second.influentialNodes().any { node -> node == this } }.map { it.first as Node<T> }
+    }.filter { it.second.influentialNodes().any { node -> node == this } }.map { it.first }
 }
 fun normalizationFunctionForAngle(angle: Double): Double {
     return angle * 2 / PI
