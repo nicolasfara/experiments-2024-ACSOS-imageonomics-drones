@@ -204,7 +204,7 @@ if __name__ == '__main__':
     # Number of time samples 
     timeSamples = 100
     # time management
-    minTime = 0
+    minTime = 300
     maxTime = 1800 - minTime
     timeColumnName = 'time'
     logarithmicTime = False
@@ -490,7 +490,7 @@ if __name__ == '__main__':
     os.makedirs(f'{output_directory}/{current_experiment}/custom', exist_ok=True)
 
     def plot_metric_by_algorithm(dataset, cam_herd_ratio, number_of_herds):
-        fig, ax = plt.subplots(1, 5, figsize=(16, 4), sharey=False, layout="constrained")
+        fig, ax = plt.subplots(1, len(dataset.columns), figsize=(16, 4), sharey=False, layout="constrained")
         fig.suptitle(f"CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
 
         for a, metric in zip(ax, dataset.columns):
@@ -504,7 +504,7 @@ if __name__ == '__main__':
         fig.savefig(f'{output_directory}/{current_experiment}/custom/metrics_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
 
     def plot_k_coverage_by_algorithm(dataset, errors, cam_her_ratio, number_of_herds):
-        fig, ax = plt.subplots(1, 2, figsize=(16, 5), sharey=False, layout="constrained")
+        fig, ax = plt.subplots(1, len(dataset.columns), figsize=(16, 5), sharey=False, layout="constrained")
         fig.suptitle(f"CamHerdRatio={cam_her_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
 
         plus_sigma = dataset + errors
@@ -536,32 +536,30 @@ if __name__ == '__main__':
 
             k_coverage_by_algorithm = dataset_means.sel(
                 {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
-            )[["1-coverage", "2-coverage"]].to_dataframe()
+            )[["1-coverage", "2-coverage", "3-coverage"]].to_dataframe()
             k_coverage_by_algorithm.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
             k_coverage_by_algorithm_errors = dataset_stdevs.sel(
                 {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
-            )[["1-coverage", "2-coverage"]].to_dataframe()
+            )[["1-coverage", "2-coverage", "3-coverage"]].to_dataframe()
             k_coverage_by_algorithm_errors.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
-            # convert to stdev
-            # k_coverage_by_algorithm_errors = k_coverage_by_algorithm_errors ** 0.5
 
             plot_k_coverage_by_algorithm(k_coverage_by_algorithm, k_coverage_by_algorithm_errors, cam_ratio, num_herds)
 
     # Aggregate metric plotting
 
-    def aggregate_metric(v):
+    def global_metric(v):
         return v["1-coverage"] * ((v["BodyCoverageOnlyCovered[mean]"] + v["FovDistanceOnlyCovered[mean]"]) / 2) * (1 - v["NoisePerceivedNormalized[mean]"])
 
-    dataset_means = dataset_means.assign(GlobalMetric=aggregate_metric)
+    dataset_means = dataset_means.assign(GlobalMetric=global_metric)
 
     def plot_global_metric_by_algorithm(ds, cam_herd_ratio, number_of_herds):
-        fig, ax = plt.subplots(1, 1, figsize=(10, 8))
+        fig, ax = plt.subplots(1, 1, figsize=(6, 4))
         sns.boxplot(ds, ax=ax, x="Algorithm", y="GlobalMetric", palette="viridis", hue="Algorithm")
-        ax.set_title(f"Global Metric - CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
+        ax.set_title(f"Global Metric - CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=12)
         ax.xaxis.grid(True)
         ax.yaxis.grid(True)
         ax.set(ylabel="Performance")
-        ax.xaxis.get_label().set_fontsize(16)
+        ax.xaxis.get_label().set_fontsize(10)
 
         fig.savefig(f'{output_directory}/{current_experiment}/custom/global_metric_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
 
@@ -578,13 +576,39 @@ if __name__ == '__main__':
 
     # Geometric average per algorithm
 
-    products = dataset_means[
-        ["BodyCoverage[mean]", "NoisePerceived[mean]", "FovDistance[mean]"]
-    ].prod(dim=["CamHerdRatio", "NumberOfHerds"], skipna=True)
-    dataset_geometric_mean = products ** (1 / len(dataset_means.time))
+    def plot_geometric_average_per_algorithm(ds, errors):
+        fig, ax = plt.subplots(1, len(ds.columns), figsize=(16, 5), sharey=False, layout="constrained")
+        fig.suptitle(f"Geometric Average", fontsize=20)
 
-    dataset_geometric_mean["BodyCoverage[mean]"].plot.line(x="time", figsize=(12, 6))
-    dataset_geometric_mean["NoisePerceived[mean]"].plot.line(x="time", figsize=(12, 6))
-    dataset_geometric_mean["FovDistance[mean]"].plot.line(x="time", figsize=(12, 6))
+        plus_sigma = ds + errors
+        minus_sigma = ds - errors
+        time = np.arange(minTime, maxTime, (maxTime - minTime) / timeSamples)
+
+        for a, metric in zip(ax, ds.columns):
+            sns.lineplot(ds, ax=a, x="time", y=metric, palette="viridis", hue="Algorithm")
+            for i, algo in enumerate(ds[metric].index.get_level_values(0).unique()):
+                a.fill_between(time, minus_sigma[metric][algo], plus_sigma[metric][algo], alpha=0.3, color=sns.color_palette('viridis')[i])
+            a.set_title(f"Geometric Average of {metric}")
+            a.xaxis.grid(True)
+            a.yaxis.grid(True)
+            a.set(ylabel="Performance")
+            a.xaxis.get_label().set_fontsize(16)
+
+        fig.savefig(f'{output_directory}/{current_experiment}/custom/geometric_average_by_algorithms.pdf')
+
+    size = len(dataset_means["CamHerdRatio"]) * len(dataset_means["NumberOfHerds"])
+    geometric_average_metrics = dataset_means[
+        ["BodyCoverage[mean]", "FovDistance[mean]", "NoisePerceivedNormalized[mean]"]
+    ].prod(dim=["CamHerdRatio", "NumberOfHerds"], skipna=True)
+    dataset_geometric_mean = geometric_average_metrics ** (1 / size)
+    dataset_geometric_mean = dataset_geometric_mean.to_dataframe()
+
+    geometric_average_metrics_errors = dataset_stdevs[
+        ["BodyCoverage[mean]", "FovDistance[mean]", "NoisePerceivedNormalized[mean]"]
+    ].prod(dim=["CamHerdRatio", "NumberOfHerds"], skipna=True)
+    dataset_geometric_mean_errors = geometric_average_metrics_errors ** (1 / size)
+    dataset_geometric_mean_errors = dataset_geometric_mean_errors.to_dataframe()
+
+    plot_geometric_average_per_algorithm(dataset_geometric_mean, dataset_geometric_mean_errors)
 
     plt.show()
