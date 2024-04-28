@@ -1,3 +1,25 @@
+## [1.10.0](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.9.6...1.10.0) (2024-04-28)
+
+
+### Features
+
+* generate more charts ([f2af0d4](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/f2af0d48760e5ca0ecba338db022cc6a4165e9b1))
+
+
+### Bug Fixes
+
+* upload fixed data ([e31f513](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/e31f513bb93382be345480b70c279173674aaa8d))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.9.6 [skip ci] ([b7407af](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/b7407afeac5fbcf2b34d17a92a578f951afcbf14))
+
+
+### Refactoring
+
+* set 3 max cameras per target ([a1cad75](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/a1cad752d704c70ed2d4bd32474040b9352b2dbc))
+
 ## [1.9.6](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.9.5...1.9.6) (2024-04-26)
 
 
