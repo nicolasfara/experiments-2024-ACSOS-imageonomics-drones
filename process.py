@@ -304,8 +304,7 @@ if __name__ == '__main__':
             lastTimeProcessed = pickle.load(open('timeprocessed', 'rb'))
         except:
             lastTimeProcessed = -1
-        # shouldRecompute = not os.path.exists(".skip_data_process") and newestFileTime != lastTimeProcessed
-        shouldRecompute = True
+        shouldRecompute = not os.path.exists(".skip_data_process") and newestFileTime != lastTimeProcessed
         if not shouldRecompute:
             try:
                 means = pickle.load(open(pickleOutput + '_mean', 'rb'))
@@ -474,7 +473,7 @@ if __name__ == '__main__':
     for experiment in experiments:
         current_experiment_means = means[experiment]
         current_experiment_errors = stdevs[experiment]
-        # generate_all_charts(current_experiment_means, current_experiment_errors, basedir = f'{experiment}/all')
+        # generate_all_charts(current_experiment_means, current_experiment_errors, basedir=f'{experiment}/all')
 
     current_experiment = "experiment_export"
 
@@ -489,13 +488,22 @@ if __name__ == '__main__':
     # Create the output directory for custom charts
     os.makedirs(f'{output_directory}/{current_experiment}/custom', exist_ok=True)
 
-    def plot_metric_by_algorithm(dataset, cam_herd_ratio, number_of_herds):
-        fig, ax = plt.subplots(1, len(dataset.columns), figsize=(16, 4), sharey=False, layout="constrained")
+    metrics_labels_full = [
+        "Body Coverage",
+        "Body Coverage (Only Covered)",
+        "Fov Distance",
+        "Fov Distance (Only Covered)",
+        "Noise Perceived",
+    ]
+    metrics_labels = ["Body Coverage", "Fov Distance", "Noise Perceived (normalized)"]
+
+    def plot_metric_by_algorithm(dataset, cam_herd_ratio, number_of_herds, labels):
+        fig, ax = plt.subplots(1, len(dataset.columns), figsize=(18, 4), sharey=False, layout="constrained")
         fig.suptitle(f"CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
 
-        for a, metric in zip(ax, dataset.columns):
+        for a, metric, label in zip(ax, dataset.columns, labels):
             sns.boxplot(dataset, ax=a, x="Algorithm", y=metric, palette="viridis", hue="Algorithm")
-            a.set_title(metric)
+            a.set_title(label)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
             a.set(ylabel="Performance" if metric != "NoisePerceived[mean]" else "dB")
@@ -516,7 +524,6 @@ if __name__ == '__main__':
             sns.lineplot(dataset, ax=a, x="time", y=k, palette="viridis", hue="Algorithm")
             for i, algo in enumerate(dataset[k].index.get_level_values(0).unique()):
                 a.fill_between(time, minus_sigma[k][algo], plus_sigma[k][algo], alpha=0.3, color=sns.color_palette('viridis')[i])
-                #a.fill_between(dataset.index.get_level_values(1), minus_sigma[k], plus_sigma[k], alpha=0.2)
             a.set_title(k)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
@@ -532,7 +539,7 @@ if __name__ == '__main__':
             )[["BodyCoverage[mean]", "BodyCoverageOnlyCovered[mean]", "FovDistance[mean]", "FovDistanceOnlyCovered[mean]", "NoisePerceived[mean]"]].to_dataframe()
             metrics_by_algorithms.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
 
-            plot_metric_by_algorithm(metrics_by_algorithms, cam_ratio, num_herds)
+            plot_metric_by_algorithm(metrics_by_algorithms, cam_ratio, num_herds, metrics_labels_full)
 
             k_coverage_by_algorithm = dataset_means.sel(
                 {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
@@ -548,14 +555,16 @@ if __name__ == '__main__':
     # Aggregate metric plotting
 
     def global_metric(v):
-        return v["1-coverage"] * ((v["BodyCoverageOnlyCovered[mean]"] + v["FovDistanceOnlyCovered[mean]"]) / 2) * (1 - v["NoisePerceivedNormalized[mean]"])
+    #     return v["1-coverage"] * ((v["BodyCoverageOnlyCovered[mean]"] + v["FovDistanceOnlyCovered[mean]"]) / 2) * (1 - v["NoisePerceivedNormalized[mean]"])
+        return (v["BodyCoverage[mean]"] * v["FovDistance[mean]"]) * (1 - v["NoisePerceivedNormalized[mean]"])
 
     dataset_means = dataset_means.assign(GlobalMetric=global_metric)
 
     def plot_global_metric_by_algorithm(ds, cam_herd_ratio, number_of_herds):
-        fig, ax = plt.subplots(1, 1, figsize=(6, 4))
+        fig, ax = plt.subplots(1, 1, figsize=(6, 4), sharey=False, layout="constrained")
+        fig.suptitle("Global Performance", fontsize=20)
         sns.boxplot(ds, ax=ax, x="Algorithm", y="GlobalMetric", palette="viridis", hue="Algorithm")
-        ax.set_title(f"Global Metric - CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=12)
+        ax.set_title(f"CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=12)
         ax.xaxis.grid(True)
         ax.yaxis.grid(True)
         ax.set(ylabel="Performance")
@@ -576,19 +585,19 @@ if __name__ == '__main__':
 
     # Geometric average per algorithm
 
-    def plot_geometric_average_per_algorithm(ds, errors):
-        fig, ax = plt.subplots(1, len(ds.columns), figsize=(16, 5), sharey=False, layout="constrained")
+    def plot_geometric_average_per_algorithm(ds, errors, labels):
+        fig, ax = plt.subplots(1, len(ds.columns), figsize=(18, 4), sharey=False, layout="constrained")
         fig.suptitle(f"Geometric Average", fontsize=20)
 
         plus_sigma = ds + errors
         minus_sigma = ds - errors
         time = np.arange(minTime, maxTime, (maxTime - minTime) / timeSamples)
 
-        for a, metric in zip(ax, ds.columns):
+        for a, metric, label in zip(ax, ds.columns, labels):
             sns.lineplot(ds, ax=a, x="time", y=metric, palette="viridis", hue="Algorithm")
             for i, algo in enumerate(ds[metric].index.get_level_values(0).unique()):
                 a.fill_between(time, minus_sigma[metric][algo], plus_sigma[metric][algo], alpha=0.3, color=sns.color_palette('viridis')[i])
-            a.set_title(f"Geometric Average of {metric}")
+            a.set_title(label)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
             a.set(ylabel="Performance")
@@ -609,6 +618,6 @@ if __name__ == '__main__':
     dataset_geometric_mean_errors = geometric_average_metrics_errors ** (1 / size)
     dataset_geometric_mean_errors = dataset_geometric_mean_errors.to_dataframe()
 
-    plot_geometric_average_per_algorithm(dataset_geometric_mean, dataset_geometric_mean_errors)
+    plot_geometric_average_per_algorithm(dataset_geometric_mean, dataset_geometric_mean_errors, metrics_labels)
 
     plt.show()
