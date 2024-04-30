@@ -497,6 +497,7 @@ if __name__ == '__main__':
     ]
     metrics_labels = ["Body Coverage", "Fov Distance", "Noise Perceived (normalized)"]
 
+
     def plot_metric_by_algorithm(dataset, cam_herd_ratio, number_of_herds, labels):
         fig, ax = plt.subplots(1, len(dataset.columns), figsize=(18, 4), sharey=False, layout="constrained")
         fig.suptitle(f"CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
@@ -509,10 +510,12 @@ if __name__ == '__main__':
             a.set(ylabel="Performance" if metric != "NoisePerceived[mean]" else "dB")
             a.xaxis.get_label().set_fontsize(16)
 
-        fig.savefig(f'{output_directory}/{current_experiment}/custom/metrics_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
+        fig.savefig(
+            f'{output_directory}/{current_experiment}/custom/metrics_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
+
 
     def plot_k_coverage_by_algorithm(dataset, errors, cam_her_ratio, number_of_herds):
-        fig, ax = plt.subplots(1, len(dataset.columns), figsize=(16, 5), sharey=False, layout="constrained")
+        fig, ax = plt.subplots(1, len(dataset.columns), figsize=(18, 4), sharey=False, layout="constrained")
         fig.suptitle(f"CamHerdRatio={cam_her_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
 
         plus_sigma = dataset + errors
@@ -523,20 +526,24 @@ if __name__ == '__main__':
         for a, k in zip(ax, dataset.columns):
             sns.lineplot(dataset, ax=a, x="time", y=k, palette="viridis", hue="Algorithm")
             for i, algo in enumerate(dataset[k].index.get_level_values(0).unique()):
-                a.fill_between(time, minus_sigma[k][algo], plus_sigma[k][algo], alpha=0.3, color=sns.color_palette('viridis')[i])
+                a.fill_between(time, minus_sigma[k][algo], plus_sigma[k][algo], alpha=0.3,
+                               color=sns.color_palette('viridis')[i])
             a.set_title(k)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
             a.xaxis.get_label().set_fontsize(16)
 
-        fig.savefig(f'{output_directory}/{current_experiment}/custom/k_coverage_by_algorithms_CamHerRatio={cam_her_ratio}_NumberOfHerds={number_of_herds}.pdf')
+        fig.savefig(
+            f'{output_directory}/{current_experiment}/custom/k_coverage_by_algorithms_CamHerRatio={cam_her_ratio}_NumberOfHerds={number_of_herds}.pdf')
+
 
     # Plot metrics by algorithms
     for cam_ratio in dataset_means["CamHerdRatio"].to_numpy():
         for num_herds in dataset_means["NumberOfHerds"].to_numpy():
             metrics_by_algorithms = dataset_means.sel(
                 {"CamHerdRatio": cam_ratio, "NumberOfHerds": num_herds}
-            )[["BodyCoverage[mean]", "BodyCoverageOnlyCovered[mean]", "FovDistance[mean]", "FovDistanceOnlyCovered[mean]", "NoisePerceived[mean]"]].to_dataframe()
+            )[["BodyCoverage[mean]", "BodyCoverageOnlyCovered[mean]", "FovDistance[mean]",
+               "FovDistanceOnlyCovered[mean]", "NoisePerceived[mean]"]].to_dataframe()
             metrics_by_algorithms.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
 
             plot_metric_by_algorithm(metrics_by_algorithms, cam_ratio, num_herds, metrics_labels_full)
@@ -555,10 +562,12 @@ if __name__ == '__main__':
     # Aggregate metric plotting
 
     def global_metric(v):
-    #     return v["1-coverage"] * ((v["BodyCoverageOnlyCovered[mean]"] + v["FovDistanceOnlyCovered[mean]"]) / 2) * (1 - v["NoisePerceivedNormalized[mean]"])
+        #     return v["1-coverage"] * ((v["BodyCoverageOnlyCovered[mean]"] + v["FovDistanceOnlyCovered[mean]"]) / 2) * (1 - v["NoisePerceivedNormalized[mean]"])
         return (v["BodyCoverage[mean]"] * v["FovDistance[mean]"]) * (1 - v["NoisePerceivedNormalized[mean]"])
 
+
     dataset_means = dataset_means.assign(GlobalMetric=global_metric)
+
 
     def plot_global_metric_by_algorithm(ds, cam_herd_ratio, number_of_herds):
         fig, ax = plt.subplots(1, 1, figsize=(6, 4), sharey=False, layout="constrained")
@@ -570,7 +579,9 @@ if __name__ == '__main__':
         ax.set(ylabel="Performance")
         ax.xaxis.get_label().set_fontsize(10)
 
-        fig.savefig(f'{output_directory}/{current_experiment}/custom/global_metric_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
+        fig.savefig(
+            f'{output_directory}/{current_experiment}/custom/global_metric_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
+
 
     for cam_ratio in dataset_means["CamHerdRatio"].to_numpy():
         for num_herds in dataset_means["NumberOfHerds"].to_numpy():
@@ -580,6 +591,30 @@ if __name__ == '__main__':
             metrics_by_algorithms.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
 
             plot_global_metric_by_algorithm(metrics_by_algorithms, cam_ratio, num_herds)
+
+    #  Custom global metric plotting
+
+    def plot_selected_global_charts(dataset):
+        selections = [
+            {"CamHerdRatio": 1.0, "NumberOfHerds": 2.0},
+            {"CamHerdRatio": 2.0, "NumberOfHerds": 4.0},
+            {"CamHerdRatio": 3.0, "NumberOfHerds": 8.0},
+        ]
+        fix, ax = plt.subplots(1, len(selections), figsize=(18, 4), sharey=False, layout="constrained")
+        fix.suptitle("Global Performance", fontsize=20)
+        for a, selection in zip(ax, selections):
+            ds = dataset.sel(selection)["GlobalMetric"].to_dataframe()
+            ds.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
+            sns.boxplot(ds, ax=a, x="Algorithm", y="GlobalMetric", palette="viridis", hue="Algorithm")
+            a.set_title(f"CamHerdRatio={selection['CamHerdRatio']} - NumberOfHerds={selection['NumberOfHerds']}")
+            a.xaxis.grid(True)
+            a.yaxis.grid(True)
+            a.set(ylabel="Performance")
+            a.xaxis.get_label().set_fontsize(16)
+
+        fix.savefig(f'{output_directory}/{current_experiment}/custom/selected_global_metric_by_algorithms.pdf')
+
+    plot_selected_global_charts(dataset_means)
 
     ###########################################################################
 
@@ -596,7 +631,8 @@ if __name__ == '__main__':
         for a, metric, label in zip(ax, ds.columns, labels):
             sns.lineplot(ds, ax=a, x="time", y=metric, palette="viridis", hue="Algorithm")
             for i, algo in enumerate(ds[metric].index.get_level_values(0).unique()):
-                a.fill_between(time, minus_sigma[metric][algo], plus_sigma[metric][algo], alpha=0.3, color=sns.color_palette('viridis')[i])
+                a.fill_between(time, minus_sigma[metric][algo], plus_sigma[metric][algo], alpha=0.3,
+                               color=sns.color_palette('viridis')[i])
             a.set_title(label)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
@@ -604,6 +640,7 @@ if __name__ == '__main__':
             a.xaxis.get_label().set_fontsize(16)
 
         fig.savefig(f'{output_directory}/{current_experiment}/custom/geometric_average_by_algorithms.pdf')
+
 
     size = len(dataset_means["CamHerdRatio"]) * len(dataset_means["NumberOfHerds"])
     geometric_average_metrics = dataset_means[
