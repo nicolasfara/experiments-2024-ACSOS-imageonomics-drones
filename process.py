@@ -393,7 +393,6 @@ if __name__ == '__main__':
     matplotlib.rcParams.update({'axes.titlesize': 12})
     matplotlib.rcParams.update({'axes.labelsize': 10})
 
-
     def make_line_chart(
             xdata,
             ydata,
@@ -500,23 +499,25 @@ if __name__ == '__main__':
 
     def plot_metric_by_algorithm(dataset, cam_herd_ratio, number_of_herds, labels):
         fig, ax = plt.subplots(1, len(dataset.columns), figsize=(18, 4), sharey=False, layout="constrained")
-        fig.suptitle(f"CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
+        fig.suptitle(r"$\nu$=" + str(int(cam_herd_ratio)) + r" - $\zeta$=" + str(int(number_of_herds)), fontsize=20)
 
         for a, metric, label in zip(ax, dataset.columns, labels):
             sns.boxplot(dataset, ax=a, x="Algorithm", y=metric, palette="viridis", hue="Algorithm")
-            a.set_title(label)
+            # a.set_title(label, fontsize=16)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
-            a.set(ylabel="Performance" if metric != "NoisePerceived[mean]" else "dB")
-            a.xaxis.get_label().set_fontsize(16)
+            a.tick_params(labelsize=13, axis='x', rotation=45)
+            a.set(ylabel=label if metric != "NoisePerceived[mean]" else "Noise Perceived (dB)")
+            a.xaxis.get_label().set_fontsize(15)
+            a.yaxis.get_label().set_fontsize(12)
 
         fig.savefig(
             f'{output_directory}/{current_experiment}/custom/metrics_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
 
 
-    def plot_k_coverage_by_algorithm(dataset, errors, cam_her_ratio, number_of_herds):
+    def plot_k_coverage_by_algorithm(dataset, errors, cam_herd_ratio, number_of_herds):
         fig, ax = plt.subplots(1, len(dataset.columns), figsize=(18, 4), sharey=False, layout="constrained")
-        fig.suptitle(f"CamHerdRatio={cam_her_ratio} - NumberOfHerds={number_of_herds}", fontsize=20)
+        fig.suptitle(r"$\nu$=" + str(int(cam_herd_ratio)) + r" - $\zeta$=" + str(int(number_of_herds)), fontsize=20)
 
         plus_sigma = dataset + errors
         minus_sigma = dataset - errors
@@ -528,13 +529,16 @@ if __name__ == '__main__':
             for i, algo in enumerate(dataset[k].index.get_level_values(0).unique()):
                 a.fill_between(time, minus_sigma[k][algo], plus_sigma[k][algo], alpha=0.3,
                                color=sns.color_palette('viridis')[i])
-            a.set_title(k)
+            # a.set_title(k, fontsize=16)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
-            a.xaxis.get_label().set_fontsize(16)
+            a.tick_params(labelsize=13)
+            a.set_ylim(0, 1)
+            a.xaxis.get_label().set_fontsize(15)
+            a.yaxis.get_label().set_fontsize(15)
 
         fig.savefig(
-            f'{output_directory}/{current_experiment}/custom/k_coverage_by_algorithms_CamHerRatio={cam_her_ratio}_NumberOfHerds={number_of_herds}.pdf')
+            f'{output_directory}/{current_experiment}/custom/k_coverage_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
 
 
     # Plot metrics by algorithms
@@ -571,12 +575,12 @@ if __name__ == '__main__':
 
     def plot_global_metric_by_algorithm(ds, cam_herd_ratio, number_of_herds):
         fig, ax = plt.subplots(1, 1, figsize=(6, 4), sharey=False, layout="constrained")
-        fig.suptitle("Global Performance", fontsize=20)
+        # fig.suptitle("Global Performance", fontsize=20)
         sns.boxplot(ds, ax=ax, x="Algorithm", y="GlobalMetric", palette="viridis", hue="Algorithm")
         ax.set_title(f"CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=12)
         ax.xaxis.grid(True)
         ax.yaxis.grid(True)
-        ax.set(ylabel="Performance")
+        ax.set(ylabel=r"$G$")
         ax.xaxis.get_label().set_fontsize(10)
 
         fig.savefig(
@@ -601,16 +605,18 @@ if __name__ == '__main__':
             {"CamHerdRatio": 3.0, "NumberOfHerds": 8.0},
         ]
         fix, ax = plt.subplots(1, len(selections), figsize=(18, 4), sharey=False, layout="constrained")
-        fix.suptitle("Global Performance", fontsize=20)
+        # fix.suptitle("Global Performance", fontsize=20)
         for a, selection in zip(ax, selections):
             ds = dataset.sel(selection)["GlobalMetric"].to_dataframe()
             ds.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
             sns.boxplot(ds, ax=a, x="Algorithm", y="GlobalMetric", palette="viridis", hue="Algorithm")
-            a.set_title(f"CamHerdRatio={selection['CamHerdRatio']} - NumberOfHerds={selection['NumberOfHerds']}")
+            a.set_title(r"$\nu$=" + str(int(selection['CamHerdRatio'])) + r" - $\zeta$=" + str(int(selection['NumberOfHerds'])), fontsize=16)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
-            a.set(ylabel="Performance")
-            a.xaxis.get_label().set_fontsize(16)
+            a.tick_params(labelsize=13)
+            a.set(ylabel=r"$G$")
+            a.xaxis.get_label().set_fontsize(15)
+            a.yaxis.get_label().set_fontsize(15)
 
         fix.savefig(f'{output_directory}/{current_experiment}/custom/selected_global_metric_by_algorithms.pdf')
 
@@ -633,11 +639,13 @@ if __name__ == '__main__':
             for i, algo in enumerate(ds[metric].index.get_level_values(0).unique()):
                 a.fill_between(time, minus_sigma[metric][algo], plus_sigma[metric][algo], alpha=0.3,
                                color=sns.color_palette('viridis')[i])
-            a.set_title(label)
+            # a.set_title(label, fontsize=16)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
-            a.set(ylabel="Performance")
-            a.xaxis.get_label().set_fontsize(16)
+            a.tick_params(labelsize=13)
+            a.set(ylabel=label)
+            a.xaxis.get_label().set_fontsize(15)
+            a.yaxis.get_label().set_fontsize(15)
 
         fig.savefig(f'{output_directory}/{current_experiment}/custom/geometric_average_by_algorithms.pdf')
 
@@ -657,4 +665,4 @@ if __name__ == '__main__':
 
     plot_geometric_average_per_algorithm(dataset_geometric_mean, dataset_geometric_mean_errors, metrics_labels)
 
-    plt.show()
+    # plt.show()
