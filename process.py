@@ -480,6 +480,8 @@ if __name__ == '__main__':
     dataset_means = means[current_experiment]
     dataset_stdevs = stdevs[current_experiment]
 
+    plt.rc('text.latex', preamble=r'\usepackage{amsmath,amssymb,amsfonts,amssymb,graphicx}')
+
     # Filter out the ff_linpro_ac algorithm
     # dataset_means = dataset_means.where(dataset_means["Algorithm"] != "ff_linpro_ac", drop=True)
     # dataset_stdevs = dataset_stdevs.where(dataset_stdevs["Algorithm"] != "ff_linpro_ac", drop=True)
@@ -534,6 +536,7 @@ if __name__ == '__main__':
             a.yaxis.grid(True)
             a.tick_params(labelsize=13)
             a.set_ylim(0, 1)
+            a.margins(x=0)
             a.xaxis.get_label().set_fontsize(15)
             a.yaxis.get_label().set_fontsize(15)
 
@@ -630,6 +633,12 @@ if __name__ == '__main__':
         fig, ax = plt.subplots(1, len(ds.columns), figsize=(18, 4), sharey=False, layout="constrained")
         fig.suptitle(f"Geometric Average", fontsize=20)
 
+        custom_labels = {
+            "Body Coverage": r"$\diamond$",
+            "Fov Distance": r"$\Gamma$",
+            "Noise Perceived (normalized)": r"$\rho$"
+        }
+
         plus_sigma = ds + errors
         minus_sigma = ds - errors
         time = np.arange(minTime, maxTime, (maxTime - minTime) / timeSamples)
@@ -643,7 +652,8 @@ if __name__ == '__main__':
             a.xaxis.grid(True)
             a.yaxis.grid(True)
             a.tick_params(labelsize=13)
-            a.set(ylabel=label)
+            a.set(ylabel=r"{}".format(custom_labels[label]))
+            a.margins(x=0)
             a.xaxis.get_label().set_fontsize(15)
             a.yaxis.get_label().set_fontsize(15)
 
