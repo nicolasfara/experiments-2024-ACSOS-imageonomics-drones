@@ -481,6 +481,7 @@ if __name__ == '__main__':
     dataset_stdevs = stdevs[current_experiment]
 
     plt.rc('text.latex', preamble=r'\usepackage{amsmath,amssymb,amsfonts,amssymb,graphicx}')
+    plt.rcParams.update({"text.usetex": True})
 
     # Filter out the ff_linpro_ac algorithm
     # dataset_means = dataset_means.where(dataset_means["Algorithm"] != "ff_linpro_ac", drop=True)
@@ -508,10 +509,10 @@ if __name__ == '__main__':
             # a.set_title(label, fontsize=16)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
-            a.tick_params(labelsize=13, axis='x', rotation=45)
+            a.tick_params(labelsize=15, axis='x', rotation=45)
             a.set(ylabel=label if metric != "NoisePerceived[mean]" else "Noise Perceived (dB)")
-            a.xaxis.get_label().set_fontsize(15)
-            a.yaxis.get_label().set_fontsize(12)
+            a.xaxis.get_label().set_fontsize(17)
+            a.yaxis.get_label().set_fontsize(15)
 
         fig.savefig(
             f'{output_directory}/{current_experiment}/custom/metrics_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
@@ -534,11 +535,11 @@ if __name__ == '__main__':
             # a.set_title(k, fontsize=16)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
-            a.tick_params(labelsize=13)
+            a.tick_params(labelsize=15)
             a.set_ylim(0, 1)
             a.margins(x=0)
-            a.xaxis.get_label().set_fontsize(15)
-            a.yaxis.get_label().set_fontsize(15)
+            a.xaxis.get_label().set_fontsize(17)
+            a.yaxis.get_label().set_fontsize(17)
 
         fig.savefig(
             f'{output_directory}/{current_experiment}/custom/k_coverage_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
@@ -616,10 +617,10 @@ if __name__ == '__main__':
             a.set_title(r"$\nu$=" + str(int(selection['CamHerdRatio'])) + r" - $\zeta$=" + str(int(selection['NumberOfHerds'])), fontsize=16)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
-            a.tick_params(labelsize=13)
+            a.tick_params(labelsize=15)
             a.set(ylabel=r"$G$")
-            a.xaxis.get_label().set_fontsize(15)
-            a.yaxis.get_label().set_fontsize(15)
+            a.xaxis.get_label().set_fontsize(17)
+            a.yaxis.get_label().set_fontsize(17)
 
         fix.savefig(f'{output_directory}/{current_experiment}/custom/selected_global_metric_by_algorithms.pdf')
 
@@ -634,7 +635,7 @@ if __name__ == '__main__':
         fig.suptitle(f"Geometric Average", fontsize=20)
 
         custom_labels = {
-            "Body Coverage": r"$\diamond$",
+            "Body Coverage": r"$\Diamond$",
             "Fov Distance": r"$\Gamma$",
             "Noise Perceived (normalized)": r"$\rho$"
         }
@@ -651,11 +652,11 @@ if __name__ == '__main__':
             # a.set_title(label, fontsize=16)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
-            a.tick_params(labelsize=13)
+            a.tick_params(labelsize=15)
             a.set(ylabel=r"{}".format(custom_labels[label]))
             a.margins(x=0)
-            a.xaxis.get_label().set_fontsize(15)
-            a.yaxis.get_label().set_fontsize(15)
+            a.xaxis.get_label().set_fontsize(17)
+            a.yaxis.get_label().set_fontsize(17)
 
         fig.savefig(f'{output_directory}/{current_experiment}/custom/geometric_average_by_algorithms.pdf')
 
