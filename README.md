@@ -1,13 +1,4 @@
-# Alchemist Experiments Bootstrap
-
-A customized Alchemist Primer with releases and data analysis ready.
-
-Upon generation of an experiment from this template:
-1. add a secret github token with `repo` permissions named `DEPLOYMENT_TOKEN`;
-2. edit the project name in `settings.gradle.kts`;
-3. edit the DockerHub user name in `docker-compose.yml`;
-4. add a secret called `DOCKER_PASSWORD` with your DockerHub password;
-5. edit the DockerHub password in `.github/workflows/build-and-deploy.yml`;
+# Decentralized Multi-Drone Coordination for Wildlife Video Acquisition
 
 ## Reproduce the entire experiment
 
