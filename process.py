@@ -504,15 +504,24 @@ if __name__ == '__main__':
         fig, ax = plt.subplots(1, len(dataset.columns), figsize=(18, 4), sharey=False, layout="constrained")
         fig.suptitle(r"$\nu$=" + str(int(cam_herd_ratio)) + r" - $\zeta$=" + str(int(number_of_herds)), fontsize=20)
 
+        custom_labels = {
+            "Body Coverage": r"$\Diamond$",
+            "Body Coverage (Only Covered)": r"$\Diamond$ (Only Covered)",
+            "Fov Distance": r"$\Gamma$",
+            "Fov Distance (Only Covered)": r"$\Gamma$ (Only Covered)",
+            "Noise Perceived": r"$\rho$ (dB)"
+        }
+
         for a, metric, label in zip(ax, dataset.columns, labels):
             sns.boxplot(dataset, ax=a, x="Algorithm", y=metric, palette="viridis", hue="Algorithm")
             # a.set_title(label, fontsize=16)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
             a.tick_params(labelsize=15, axis='x', rotation=45)
-            a.set(ylabel=label if metric != "NoisePerceived[mean]" else "Noise Perceived (dB)")
+            # a.set(ylabel=label if metric != "NoisePerceived[mean]" else "Noise Perceived (dB)")
             a.xaxis.get_label().set_fontsize(17)
             a.yaxis.get_label().set_fontsize(15)
+            a.set(ylabel=r"{}".format(custom_labels[label]))
 
         fig.savefig(
             f'{output_directory}/{current_experiment}/custom/metrics_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
@@ -526,6 +535,7 @@ if __name__ == '__main__':
         minus_sigma = dataset - errors
         # get time values from index
         time = np.arange(minTime, maxTime, (maxTime - minTime) / timeSamples)
+        time[-1] = maxTime
 
         for a, k in zip(ax, dataset.columns):
             sns.lineplot(dataset, ax=a, x="time", y=k, palette="viridis", hue="Algorithm")
@@ -540,6 +550,7 @@ if __name__ == '__main__':
             a.margins(x=0)
             a.xaxis.get_label().set_fontsize(17)
             a.yaxis.get_label().set_fontsize(17)
+            a.set_xlim(minTime, maxTime)
 
         fig.savefig(
             f'{output_directory}/{current_experiment}/custom/k_coverage_by_algorithms_CamHerRatio={cam_herd_ratio}_NumberOfHerds={number_of_herds}.pdf')
@@ -643,6 +654,7 @@ if __name__ == '__main__':
         plus_sigma = ds + errors
         minus_sigma = ds - errors
         time = np.arange(minTime, maxTime, (maxTime - minTime) / timeSamples)
+        time[-1] = maxTime
 
         for a, metric, label in zip(ax, ds.columns, labels):
             sns.lineplot(ds, ax=a, x="time", y=metric, palette="viridis", hue="Algorithm")
@@ -657,6 +669,7 @@ if __name__ == '__main__':
             a.margins(x=0)
             a.xaxis.get_label().set_fontsize(17)
             a.yaxis.get_label().set_fontsize(17)
+            a.set_xlim(minTime, maxTime)
 
         fig.savefig(f'{output_directory}/{current_experiment}/custom/geometric_average_by_algorithms.pdf')
 
