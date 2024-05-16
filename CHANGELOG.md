@@ -1,3 +1,25 @@
+## [1.10.2](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.10.1...1.10.2) (2024-05-16)
+
+
+### Dependency updates
+
+* **deps:** update dependency xarray to v2024.5.0 ([9e3119c](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/9e3119ce4e036c9d46593df6adb8ed446986c8c2))
+
+
+### Bug Fixes
+
+* increasetask size ([6168733](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/6168733f231b3d604064d55a701c117aa2719943))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v4.1.6 ([c04325a](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/c04325af744dd201a3aaef07a670fd40bdf59431))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.10.1 [skip ci] ([6bc22cb](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/6bc22cba02456bc0ae79291e848860516a907133))
+
 ## [1.10.1](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.10.0...1.10.1) (2024-05-15)
 
 
