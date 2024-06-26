@@ -472,7 +472,7 @@ if __name__ == '__main__':
     for experiment in experiments:
         current_experiment_means = means[experiment]
         current_experiment_errors = stdevs[experiment]
-        # generate_all_charts(current_experiment_means, current_experiment_errors, basedir=f'{experiment}/all')
+        generate_all_charts(current_experiment_means, current_experiment_errors, basedir=f'{experiment}/all')
 
     current_experiment = "experiment_export"
 
