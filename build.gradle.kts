@@ -100,6 +100,7 @@ File(rootProject.rootDir.path + "/src/main/yaml").listFiles()
             )
             if (System.getenv("CI") == "true") {
                 args("--override", "terminate: { type: AfterTime, parameters: [2] } ")
+                args("--override", "export: { type: CSVExporter, parameters: { fileNameRoot: noname, interval: 1.0, exportPath: nopath }, data: [time] }")
             } else {
                 this.additionalConfiguration()
             }
