@@ -1,3 +1,62 @@
+## [1.10.3](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.10.2...1.10.3) (2024-06-28)
+
+
+### Dependency updates
+
+* **deps:** update alchemist to v34.0.10 ([626f14c](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/626f14c5faf4471395e4e06df3afbf83744c85f4))
+* **deps:** update alchemist to v34.0.13 ([2f8aa34](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/2f8aa341e7d0a5d8ab2b331ea5fc426e3be0cbdb))
+* **deps:** update alchemist to v34.0.7 ([b49962d](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/b49962d7e2e577c374a464b2fb601d4766322192))
+* **deps:** update alchemist to v34.0.8 ([891f91e](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/891f91e89fba6311badb3e7d75238620fa886df9))
+* **deps:** update alchemist to v34.0.9 ([9d54fb6](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/9d54fb696e9e089706556144ab558fe20e89a914))
+* **deps:** update alpine docker tag to v3.20.0 ([1f5351e](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/1f5351e96f5bc84676a9ff3d2edf9769680faedf))
+* **deps:** update alpine docker tag to v3.20.1 ([e3db00f](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/e3db00fae75ccaeba0d8a60ed599714b14cb5c6c))
+* **deps:** update dependency gradle to v8.8 ([8681893](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/8681893a28aa2e515b230443e73c7fab415f5297))
+* **deps:** update dependency matplotlib to v3.9.0 ([d674f4d](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/d674f4dbb213999350c611184602b1931ec491d4))
+* **deps:** update dependency org.jetbrains.kotlin.jvm to v2 ([cb45ed2](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/cb45ed2d606fb7a8669a1bef0f73242d10fce4e2))
+* **deps:** update dependency xarray to v2024.6.0 ([ef7b505](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/ef7b505d199d6ad5b3fa7ce88d2d570fc171a1da))
+* **deps:** update node.js to 20.14 ([24c0d4d](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/24c0d4d9f446a37f02b88787c922ed0dc8a5198f))
+* **deps:** update node.js to 20.15 ([48f3307](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/48f33077d3519e1935e8b1ca21b2f2a369621525))
+* **deps:** update plugin com.gradle.develocity to v3.17.4 ([1ed9736](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/1ed9736a6189c718c3f6b32cec04caca853fbd11))
+* **deps:** update plugin com.gradle.develocity to v3.17.5 ([1b8c87c](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/1b8c87cc57e3c40ea86708b2f8dca8e7ed92321a))
+* **deps:** update plugin gitsemver to v3.1.6 ([b90324c](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/b90324cff5caf4ed899c6c4c2e5c0b4b4453b25b))
+* **deps:** update plugin gitsemver to v3.1.7 ([baa2578](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/baa2578029846ec030b8a5e067e718d0c4b273bf))
+* **deps:** update plugin kotlin-qa to v0.62.1 ([9fe5f62](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/9fe5f62fb694446cca866b5c37e708e68e7f3869))
+* **deps:** update plugin kotlin-qa to v0.62.3 ([f2f4c41](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/f2f4c419e0d35375de3d3dcf636ee9a73c16066d))
+* **deps:** update plugin tasktree to v4 ([515c769](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/515c769df1695a61b41731640a5ea3ddc506107f))
+* **deps:** update python docker tag to v3.12.4 ([0f5dc9b](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/0f5dc9ba46685863634079983824dfe2f36318e3))
+* **deps:** update smile to v3.1.1 ([fd80d62](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/fd80d628fbf3a7af936b0d7905ee5062ae23b55c))
+
+
+### Bug Fixes
+
+* enable all charts generation ([8c4e39a](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/8c4e39a907c9fce16378abcfc5ed290544ccf169))
+* update dependencies before build ([927966e](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/927966ea9b914e96b00a890dab63faeafbbe103b))
+
+
+### Documentation
+
+* update readme for artifact submission ([b184514](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/b1845143193fcf822c1f17add4b99877efc72270))
+
+
+### Build and continuous integration
+
+* **deps:** update actions/checkout action to v4.1.7 ([5d44d53](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/5d44d536f972b3646c3f29e5d7fad23e8ab41646))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.20 ([8ddacb7](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/8ddacb793ac2ada209c3a44968e2cb5a868fbd48))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.21 ([aa1d20c](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/aa1d20ccda809efc7bccb774411f8c816bcdef06))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.22 ([dfd4220](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/dfd422037e17465a1642bce62fa8e0a0517d34fc))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.23 ([d1b6a34](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/d1b6a3497e60b54fd3ce530d27f844da60244af1))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v2.4.24 ([7b011d8](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/7b011d86b9f1dc6f20f4da28fc53dc3bf4ccc77d))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3 ([0d31fb5](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/0d31fb5584ec12c1a256ecdccc133081819e50e1))
+* do not write on files when testing ([a02e898](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/a02e898d09ac08ce1d6063abf2beaf6c32f262d6))
+* test docker ([6c4c52f](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/6c4c52f0de6b786b93423af1070ce2c04d711cdc))
+
+
+### General maintenance
+
+* **docker:** add env variable ([e9274b8](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/e9274b8b2a9127ad78f662a47c9bf013091f637b))
+* **docker:** install latex ([40f7134](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/40f713424209135c700544eb917eb007dbccb9e6))
+* **release:** update gradle.properties .env versions to 1.10.2 [skip ci] ([3810a6f](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/3810a6fc983e88124ab381b4732694cbbc0a447d))
+
 ## [1.10.2](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.10.1...1.10.2) (2024-05-16)
 
 
