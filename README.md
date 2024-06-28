@@ -1,8 +1,13 @@
 # Decentralized Multi-Drone Coordination for Wildlife Video Acquisition
 
+In this repository, we provide the code and data to reproduce the experiments
+for the ACSOS 2024 paper "Decentralized Multi-Drone Coordination for Wildlife Video Acquisition".
+
 ## Reproduce the entire experiment
 
 **WARNING**: re-running the whole experiment may take a very long time on a normal computer.
+However, in the [data](./data) folder (~500MB of data, a good internet connection is recommended), we provided the generated data from the experiment,
+so that a more lightweight process can be used to generate the charts.
 
 ### Reproduce with containers (recommended)
 
@@ -21,11 +26,16 @@
 3. Launch either:
     - `./gradlew runAllBatch` on Linux, MacOS, or Windows if a bash-compatible shell is available;
     - `gradlew.bat runAllBatch` on Windows cmd or Powershell;
-4. Once the experiment is finished, the results will be available in the `data` folder. Run:
+4. LaTeX is required to generate the charts since special symbols are used in the charts. Skip this step if you already have LaTeX installed.
+    - On Ubuntu, run `sudo apt-get install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra`
+    - On Arch Linux, run `sudo pacman -S texlive`
+    - On MacOS, install via [brew](https://formulae.brew.sh/) `brew install texlive`, or install MacTeX from [https://www.tug.org/mactex/](https://www.tug.org/mactex/)
+    - On Windows, install MiKTeX from [https://miktex.org/](https://miktex.org/)
+5. Once the experiment is finished, the results will be available in the `data` folder. Run:
     - `pip install --upgrade pip`
     - `pip install -r requirements.txt`
     - `python process.py`
-5. The charts will be available in the `charts` folder.
+6. The charts will be available in the `charts` folder.
 
 ## Inspect a single experiment
 
