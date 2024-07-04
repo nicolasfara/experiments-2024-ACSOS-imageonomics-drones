@@ -57,3 +57,10 @@ so that the charts can be regenerated without having to run the experiment again
 To regenerate the charts, run `docker compose run --no-deps charts`.
 Alternatively, follow the steps or the "reproduce natively" section,
 starting after the part describing how to re-launch the simulations.
+
+## Graphical Simulation
+
+A graphical simulation can be executed to visualise simulation in time.
+To run the graphical simulation, run the gradle task: `./gradlew runHerd-k-coverageGraphic`.  
+Once the simulation window is open, you can press the <kbd>p</kbd> key to start the simulation.
+Toggling the simulation on and off can be done by pressing the <kbd>p</kbd> key.
