@@ -1,3 +1,34 @@
+## [1.10.4](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.10.3...1.10.4) (2024-07-11)
+
+### Dependency updates
+
+* **deps:** update dependency matplotlib to v3.9.1 ([027bbc1](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/027bbc135a88c241533e442e0b833fe5ca042e3b))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.86 ([418e850](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/418e850a4b11865a71652737616bf0ca1343b7c7))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.87 ([73af2a3](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/73af2a3a0647c93076bb2cb5cc971d1552db94b2))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.89 ([9a55bb7](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/9a55bb79764257482faa4ecaf1eb57b52d52793c))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.91 ([89d6d86](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/89d6d86528e1644c2e35f83cf8d767716ea8d1c9))
+* **deps:** update python docker tag to v3.12.2 ([cf9b32e](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/cf9b32e90f85d83c4266bce07a1e0bdf1cd709c9))
+* **deps:** update python docker tag to v3.12.3 ([1dd84af](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/1dd84afbcef0934854535ce31a088d7efcea8f0a))
+* **deps:** update python docker tag to v3.12.4 ([4baf4df](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/4baf4dfff0d93b2ddd38f22880f2c18a5fe3503b))
+
+### Documentation
+
+* add links for docker and pyenv ([722b213](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/722b213580c3ff01d3a9935d5f465aae6850429d))
+* instruction on for finding the generated charts ([0e4c746](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/0e4c7460f2300593cdb7f9870ae597d62a1a615c))
+* update readme to execute the gui version ([85d3eac](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/85d3eacab52b9b811e9c855c22be61f7170f4eb0))
+
+### Build and continuous integration
+
+* **deps:** update actions/download-artifact action to v4.1.8 ([29142b4](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/29142b4c246514a2d916bfc5de38b096d205d09c))
+* **deps:** update actions/setup-node action to v4.0.3 ([d5d800a](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/d5d800a7801184cdf70c14b72ba5a11e2e14f121))
+* **deps:** update actions/setup-python action to v5.1.1 ([8a9a521](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/8a9a5216a2abc7c28e6b056e99ed3e14d6969b6b))
+* **deps:** update actions/upload-artifact action to v4.3.4 ([3672a01](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/3672a01498b08b9075da964b7f3d825cc415adf9))
+* **deps:** update danysk/build-check-deploy-gradle-action action to v3.1.0 ([5e310ef](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/5e310ef81b7a9f72adeed7d19c278982d417be12))
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.10.3 [skip ci] ([e471dea](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/commit/e471dea3a694781c86e6886b55898cb519d6e6fa))
+
 ## [1.10.3](https://github.com/nicolasfara/experiments-2024-ACSOS-imageonomics-drones/compare/1.10.2...1.10.3) (2024-06-28)
 
 
