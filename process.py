@@ -499,6 +499,8 @@ if __name__ == '__main__':
     ]
     metrics_labels = ["Body Coverage", "Fov Distance", "Noise Perceived (normalized)"]
 
+    viridis = plt.colormaps['viridis']
+    palette={"bc_re_c": viridis(0.1), "ff_linpro": viridis(0.3), "ff_linpro_c": viridis(0.7), "sm_av": viridis(0.9) }
 
     def plot_metric_by_algorithm(dataset, cam_herd_ratio, number_of_herds, labels):
         fig, ax = plt.subplots(1, len(dataset.columns), figsize=(18, 4), sharey=False, layout="constrained")
@@ -513,7 +515,7 @@ if __name__ == '__main__':
         }
 
         for a, metric, label in zip(ax, dataset.columns, labels):
-            sns.boxplot(dataset, ax=a, x="Algorithm", y=metric, palette="viridis", hue="Algorithm")
+            sns.boxplot(dataset, ax=a, x="Algorithm", y=metric, palette=palette, hue="Algorithm")
             # a.set_title(label, fontsize=16)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
@@ -538,10 +540,10 @@ if __name__ == '__main__':
         time[-1] = maxTime
 
         for a, k in zip(ax, dataset.columns):
-            sns.lineplot(dataset, ax=a, x="time", y=k, palette="viridis", hue="Algorithm")
+            sns.lineplot(dataset, ax=a, x="time", y=k, palette=palette, hue="Algorithm")
             for i, algo in enumerate(dataset[k].index.get_level_values(0).unique()):
                 a.fill_between(time, minus_sigma[k][algo], plus_sigma[k][algo], alpha=0.3,
-                               color=sns.color_palette('viridis')[i])
+                               color=palette[algo])
             # a.set_title(k, fontsize=16)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
@@ -590,8 +592,9 @@ if __name__ == '__main__':
 
     def plot_global_metric_by_algorithm(ds, cam_herd_ratio, number_of_herds):
         fig, ax = plt.subplots(1, 1, figsize=(6, 4), sharey=False, layout="constrained")
+
         # fig.suptitle("Global Performance", fontsize=20)
-        sns.boxplot(ds, ax=ax, x="Algorithm", y="GlobalMetric", palette="viridis", hue="Algorithm")
+        sns.boxplot(ds, ax=ax, x="Algorithm", y="GlobalMetric", palette=palette, hue="Algorithm")
         ax.set_title(f"CamHerdRatio={cam_herd_ratio} - NumberOfHerds={number_of_herds}", fontsize=12)
         ax.xaxis.grid(True)
         ax.yaxis.grid(True)
@@ -621,10 +624,11 @@ if __name__ == '__main__':
         ]
         fix, ax = plt.subplots(1, len(selections), figsize=(18, 4), sharey=False, layout="constrained")
         # fix.suptitle("Global Performance", fontsize=20)
+        
         for a, selection in zip(ax, selections):
             ds = dataset.sel(selection)["GlobalMetric"].to_dataframe()
             ds.drop(["CamHerdRatio", "NumberOfHerds"], axis=1, inplace=True)
-            sns.boxplot(ds, ax=a, x="Algorithm", y="GlobalMetric", palette="viridis", hue="Algorithm")
+            sns.boxplot(ds, ax=a, x="Algorithm", y="GlobalMetric", palette=palette, hue="Algorithm")
             a.set_title(r"$\nu$=" + str(int(selection['CamHerdRatio'])) + r" - $\zeta$=" + str(int(selection['NumberOfHerds'])), fontsize=16)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
@@ -657,10 +661,10 @@ if __name__ == '__main__':
         time[-1] = maxTime
 
         for a, metric, label in zip(ax, ds.columns, labels):
-            sns.lineplot(ds, ax=a, x="time", y=metric, palette="viridis", hue="Algorithm")
+            sns.lineplot(ds, ax=a, x="time", y=metric, palette=palette, hue="Algorithm")
             for i, algo in enumerate(ds[metric].index.get_level_values(0).unique()):
                 a.fill_between(time, minus_sigma[metric][algo], plus_sigma[metric][algo], alpha=0.3,
-                               color=sns.color_palette('viridis')[i])
+                               color=palette[algo])
             # a.set_title(label, fontsize=16)
             a.xaxis.grid(True)
             a.yaxis.grid(True)
