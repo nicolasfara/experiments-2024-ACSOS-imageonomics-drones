@@ -82,4 +82,4 @@ In particular, the parameters defined in the `variables` section can be changed 
 For example, the number of herds can be changed by modifying the `NumberOfHerds` parameter.
 
 In the [protelis](./src/main/protelis) folder, all the coordination algorithms implemented in Protelis are available.
-
+The [HerdBehavior](./src/main/kotlin/it/unibo/alchemist/model/actions/HerdBehavior.kt) class contains the movement implementation of the herds.
