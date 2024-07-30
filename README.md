@@ -9,6 +9,11 @@ for the ACSOS 2024 paper "Decentralized Multi-Drone Coordination for Wildlife Vi
 However, in the [data](./data) folder (~500MB of data, a good internet connection is recommended), we provided the generated data from the experiment,
 so that a more lightweight process can be used to generate the charts.
 
+On a server with the following specifications, the experiment took around **3 days** to complete:
+- 96 cores (Intel(R) Xeon(R) Gold 5118 CPU @ 2.30GHz)
+- 256 GB of RAM
+- 1 GB of free disk space (the experiment generates around 500 MB of data) 
+
 ### Reproduce with containers (recommended)
 
 1. Install [docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/linux/)
@@ -17,25 +22,26 @@ so that a more lightweight process can be used to generate the charts.
 
 ### Reproduce natively
 
-1. Install a Gradle-compatible version of Java.
+1. Install Java (JDK 17 or later, recommended: [AdoptOpenJDK](https://adoptopenjdk.net/))
+2. Install a Gradle-compatible version of Java.
   Use the [Gradle/Java compatibility matrix](https://docs.gradle.org/current/userguide/compatibility.html)
   to learn which is the compatible version range.
   The version of Gradle used in this experiment can be found in the `gradle-wrapper.properties` file
   located in the `gradle/wrapper` folder.
-2. Install the version of Python indicated in `.python-version` (or use [pyenv](https://github.com/pyenv/pyenv)).
-3. Launch either:
+3. Install the version of Python indicated in `.python-version` (or use [pyenv](https://github.com/pyenv/pyenv)).
+4. Launch either:
     - `./gradlew runAllBatch` on Linux, MacOS, or Windows if a bash-compatible shell is available;
     - `gradlew.bat runAllBatch` on Windows cmd or Powershell;
-4. LaTeX is required to generate the charts since special symbols are used in the charts. You can skip this step if you already have LaTeX installed.
+5. LaTeX is required to generate the charts since special symbols are used in the charts. You can skip this step if you already have LaTeX installed.
     - On Ubuntu, run `sudo apt-get install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra`
     - On Arch Linux, run `sudo pacman -S texlive`
     - On MacOS, install via [brew](https://formulae.brew.sh/) `brew install texlive`, or install MacTeX from [https://www.tug.org/mactex/](https://www.tug.org/mactex/)
     - On Windows, install MiKTeX from [https://miktex.org/](https://miktex.org/)
-5. the results will be available in the `data` folder once the experiment is finished. Run:
+6. the results will be available in the `data` folder once the experiment is finished. Run:
     - `pip install --upgrade pip`
     - `pip install -r requirements.txt`
     - `python process.py`
-6. The charts will be available in the `charts` folder.
+7. The charts will be available in the `charts` folder.
 
 ## Inspect a single experiment
 
