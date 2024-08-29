@@ -1,3 +1,7 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10931792.svg)](https://zenodo.org/doi/10.5281/zenodo.10931792)
+
+---
+
 # Decentralized Multi-Drone Coordination for Wildlife Video Acquisition
 
 In this repository, we provide the code and data to reproduce the experiments
