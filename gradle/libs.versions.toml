@@ -13,7 +13,7 @@ alchemist-smartcam = {module = "it.unibo.alchemist:alchemist-smartcam", version.
 alchemist-ui-tooling = {module = "it.unibo.alchemist:alchemist-ui-tooling", version.ref = "alchemist" }
 apache-geometry-core = { module = "org.apache.commons:commons-geometry-core", version = "1.0" }
 apache-geometry-euclidean = { module = "org.apache.commons:commons-geometry-euclidean", version = "1.0" }
-jst = { module = "org.locationtech.jts:jts-core", version = "1.19.0" }
+jst = { module = "org.locationtech.jts:jts-core", version = "1.20.0" }
 smile-core = {module = "com.github.haifengl:smile-core", version.ref = "smile"}
 smile-kotlin = {module = "com.github.haifengl:smile-kotlin", version.ref = "smile"}
 kandy = {module = "org.jetbrains.kotlinx:kandy-lets-plot", version = "0.6.0"}
