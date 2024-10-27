@@ -1,4 +1,4 @@
 matplotlib ==3.9.2
-xarray ==2024.9.0
+xarray ==2024.10.0
 seaborn ==0.13.2
 
